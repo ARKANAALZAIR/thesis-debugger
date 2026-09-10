@@ -1,0 +1,26 @@
+id,category,title,expected_severity
+B01,broken,RQ/objectives mismatch,MEDIUM/HIGH
+B02,broken,Hypothesis/model mismatch,HIGH
+B03,broken,Methodology mismatch,HIGH/CRITICAL
+B04,broken,Variable inconsistency,HIGH
+B05,broken,Sample inconsistency,HIGH
+B06,broken,Statistical interpretation,HIGH
+B07,broken,Causal overclaim,HIGH
+B08,broken,Unsupported claim,HIGH
+B09,broken,Conclusion/result mismatch,HIGH/CRITICAL
+B10,broken,Scope inflation,MEDIUM/HIGH
+B11,broken,Dependency removal,HIGH
+B12,broken,Research dead end,HIGH/CRITICAL
+B13,broken,Evidence contradiction,HIGH
+B14,broken,Method terminology contradiction,HIGH
+B15,broken,Numerical table contradiction,MEDIUM/HIGH
+G01,good,Explained different N,INFO/NONE
+G02,good,Construct synonym with continuity,NONE
+G03,good,Negative result handled correctly,NONE
+G04,good,Association language matches design,NONE
+G05,good,Subsample analysis,NONE
+G06,good,Mixed methods integrated,NONE
+G07,good,Qualitative study,NONE
+G08,good,Causal design with assumptions,NONE
+G09,good,University guideline authority,NONE
+G10,good,Partial document,NONE
