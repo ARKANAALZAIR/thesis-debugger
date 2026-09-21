@@ -1,6 +1,6 @@
 ---
 name: thesis-debugger
-description: Audit theses, dissertations, research papers, proposals, datasets, research notes, and supervisor feedback as one connected research system. Use this skill whenever a user asks to debug, audit, validate, stress-test, find contradictions, check evidence, assess methodology, trace conclusions, analyze research changes, prepare for a defense, or identify hidden research weaknesses. Prioritize high-signal findings, traceability, low false positives, and especially change impact analysis.
+description: Audit theses, dissertations, research papers, proposals, datasets, research notes, and supervisor feedback as one connected research system. Use this skill for research debugging, literature review auditing, citation/reference integrity, paraphrase or plagiarism-risk review, academic-authenticity risk review, methodology/evidence checks, contradiction tracing, research-change impact analysis, and defense preparation. Prioritize evidence, traceability, low false positives, and change impact. Never claim plagiarism or AI authorship from style alone.
 ---
 
 # Thesis Debugger
@@ -22,7 +22,8 @@ The defining capability is **change impact analysis**: when a research decision 
 7. **Be methodology-aware.** Practices differ across quantitative, qualitative, mixed-methods, experimental, observational, case-study, review, and theoretical research.
 8. **Respect source hierarchy.** If supplied, university policy outranks generic convention; supervisor instructions outrank generic advice; project decisions outrank generic recommendations.
 9. **Academic integrity.** Never help fabricate data, significance, results, citations, or evidence.
-10. **Concise by default.** Surface critical/high findings first; offer deeper passes when requested.
+10. **Integrity limits.** Treat plagiarism/paraphrase and AI-authorship review as risk assessment unless matching source text or stronger provenance evidence is actually supplied. Never state that a text was definitely AI-written or definitely plagiarized from style alone.
+11. **Concise by default.** Surface critical/high findings first; offer deeper passes when requested.
 
 ## Activation and request routing
 
@@ -33,6 +34,10 @@ Infer the operation from natural language. Supported aliases include:
 - `/impact` → change impact analysis
 - `/contradictions` → cross-document consistency audit
 - `/evidence` → claim/evidence audit
+- `/literature` → literature review audit
+- `/citations` → reference and citation integrity audit
+- `/integrity` → plagiarism/paraphrase risk + academic authenticity review
+- `/authenticity` → academic-authenticity risk review only
 - `/methodology` → methodology/RQ/design audit
 - `/data` → dataset/report consistency and statistical interpretation checks
 - `/decisions` → research decision ledger
@@ -52,6 +57,9 @@ Before diagnosing, inventory available materials and assign roles, for example:
 - `questionnaire.docx` → instrument
 - `feedback.pdf` → supervisor feedback
 - `guidelines.pdf` → authoritative university/project requirements
+- `source-paper.pdf` / `source-text.txt` → comparison source for citation or paraphrase review
+- `references.bib` / `references.docx` → bibliography/reference list
+- `draft-v1.docx` / `draft-v2.docx` → version pair for citation drift, self-overlap, or authenticity/provenance review
 
 If only part of the project is available, explicitly state which dependency checks are impossible and audit only what is supported.
 
@@ -59,7 +67,7 @@ If only part of the project is available, explicitly state which dependency chec
 
 Construct an internal model with these nodes when evidence exists:
 
-`Research Questions, Objectives, Gap, Theories, Hypotheses, Variables, Constructs, Population, Sample, Sampling, Measurement, Methodology, Dataset, Analysis, Results, Claims, Citations, Discussion, Conclusions, Research Decisions.`
+`Research Questions, Objectives, Gap, Literature Sources, Literature Themes, Theories, Hypotheses, Variables, Constructs, Population, Sample, Sampling, Measurement, Methodology, Dataset, Analysis, Results, Claims, Citations, References, Paraphrases, Quotations, Discussion, Conclusions, Research Decisions.`
 
 Use relationships such as:
 
@@ -83,19 +91,31 @@ Read `references/methodology-checks.md`. Test whether the stated design can answ
 ### Pass 4 — Evidence and citations
 Read `references/evidence-checks.md`. For important claims, distinguish citation presence from actual support. Classify support as `SUPPORTED`, `PARTIAL`, `UNSUPPORTED`, `CONTRADICTED`, or `INSUFFICIENT EVIDENCE`.
 
-### Pass 5 — Data and statistics
+### Pass 5 — Literature Review Audit
+Read `references/literature-review-checks.md`. Audit the review as a synthesized argument rather than a list of summaries. Check search/selection transparency when supplied, coverage of directly relevant literature, thematic synthesis, chronology where material, seminal versus recent evidence balance, competing findings, gap logic, source quality, cherry-picking risk, duplicate/overlapping claims, and whether the stated contribution actually follows from the reviewed literature. Never claim that a literature search is globally exhaustive unless the search strategy and evidence justify that conclusion.
+
+### Pass 6 — Reference & Citation Integrity
+Read `references/citation-integrity-checks.md`. Check citation-reference linkage, uncited references, citations with missing reference entries, duplicate references, metadata inconsistencies, suspiciously incomplete bibliographic records, claim-source mismatch, quotation attribution, DOI/URL traceability when supplied, and citation drift across revisions. Distinguish bibliographic integrity from substantive source support; a perfectly formatted citation can still fail to support a claim. Never invent or “repair” bibliographic metadata without evidence.
+
+### Pass 7 — Plagiarism / Paraphrase Risk
+Read `references/paraphrase-risk-checks.md`. Compare supplied texts against each other for exact/near-exact overlap, close paraphrase, patchwriting, unattributed quotation, structure-preserving paraphrase, and self-overlap. Report `RISK` or `REVIEW NEEDED` unless a supplied source text and matching passage provide sufficient evidence for a stronger statement. Do not use generic style similarity as proof of plagiarism.
+
+### Pass 8 — Academic Authenticity / AI-Generated Writing Risk
+Read `references/authenticity-checks.md`. Assess provenance and writing-pattern risk only from observable evidence such as abrupt voice shifts, templated phrasing, unverifiable or mismatched citations, repeated generic claims, inconsistent terminology, revision-history/provenance gaps, or supplied authorship statements. This is an authenticity-risk review, not an AI detector. Never infer AI authorship from fluency, grammar, sophistication, or style alone. Separate style anomalies from source/evidence anomalies.
+
+### Pass 9 — Data and statistics
 Read `references/statistical-checks.md`. Cross-check reported N, variables, coding, scales, exclusions, statistics, and interpretations. Do not recompute or assert a statistical result unless the available data/context supports it.
 
-### Pass 6 — Consistency
+### Pass 10 — Consistency
 Read `references/consistency-checks.md`. Compare terminology, numbers, population, scope, hypotheses, methods, results, tables, figures, and conclusions across documents/sections.
 
-### Pass 7 — Dependency and impact
+### Pass 11 — Dependency and impact
 Read `references/dependency-model.md`. Build dependency chains and identify downstream components that depend on changed or questionable nodes.
 
-### Pass 8 — Conclusion alignment
+### Pass 12 — Conclusion alignment
 Trace every major conclusion back to results and research questions. Detect unanswered questions, unused results, unsupported conclusions, and scope inflation.
 
-### Pass 9 — Research risks
+### Pass 13 — Research risks
 Separate confirmed findings from plausible risks requiring more evidence or methodology-specific review.
 
 ### Cross-check / deduplication
@@ -182,13 +202,32 @@ Produce a 0–100 diagnostic indicator only when enough evidence exists. Suggest
 
 - Research Logic
 - Methodology
-- Evidence
+- Literature Review
+- Evidence & Citation Integrity
 - Data
 - Consistency
 - Analysis
 - Conclusion Alignment
 
 Use a weighted average only when dimensions are meaningfully assessed; otherwise state that the score is provisional. Never describe the score as a probability of acceptance/passing. Explain that scoring is heuristic and evidence-dependent.
+
+## Academic integrity finding rules
+
+For plagiarism/paraphrase-risk findings, include:
+- source/target locations when both are available;
+- overlap type (EXACT, NEAR-EXACT, CLOSE PARAPHRASE, PATCHWRITING, UNATTRIBUTED QUOTATION, SELF-OVERLAP);
+- matched excerpt(s) only as needed;
+- confidence and missing verification;
+- a clear statement that risk is not proof of misconduct unless evidence is sufficient.
+
+For AI/authenticity findings, include:
+- observable signal;
+- provenance/evidence available;
+- alternative explanations (editing, translation, co-authorship, template use);
+- confidence;
+- what additional evidence would verify the concern.
+
+Do not recommend punitive action from stylistic signals alone.
 
 ## Required finding format
 
@@ -215,14 +254,18 @@ For a full audit, follow `references/output-schema.md` and the template in `temp
 3. Critical Errors
 4. High Priority Issues
 5. Medium/Low Issues
-6. Evidence Audit
-7. Consistency Audit
-8. Dependency Analysis
-9. Change Impact (if applicable)
-10. Research Risks
-11. Action Plan
-12. Supervisor Questions
-13. Defense Risks
+6. Literature Review Audit
+7. Evidence Audit
+8. Reference & Citation Integrity
+9. Plagiarism / Paraphrase Risk
+10. Academic Authenticity Risk
+11. Consistency Audit
+12. Dependency Analysis
+13. Change Impact (if applicable)
+14. Research Risks
+15. Action Plan
+16. Supervisor Questions
+17. Defense Risks
 
 Do not dump every low-confidence observation into the opening. Lead with the highest-signal findings.
 
@@ -251,12 +294,20 @@ Load only the reference file needed for the current operation. For full audits, 
 - `references/dependency-model.md`
 - `references/severity-rubric.md`
 - `references/output-schema.md`
+- `references/literature-review-checks.md`
+- `references/citation-integrity-checks.md`
+- `references/paraphrase-risk-checks.md`
+- `references/authenticity-checks.md`
 
-Use templates in `templates/` for structured outputs and `examples/` for benchmark-style calibration.
+Use templates in `templates/` for structured outputs and `examples/` for benchmark-style calibration. Load the new integrity references only when the request involves literature, citations, paraphrase/plagiarism risk, or authenticity.
 
 ## Examples of user requests
 
 - “Debug my thesis.”
+- “Audit my literature review for gaps and weak synthesis.”
+- “Check that every citation has a matching reference and that the cited source supports the claim.”
+- “Look for plagiarism/paraphrase risk between my draft and these source excerpts.”
+- “Check this chapter for academic-authenticity risks without claiming whether AI wrote it.”
 - “Find only the critical errors.”
 - “Check whether my conclusions are supported by my results.”
 - “I changed my methodology. What else needs to change?”

@@ -24,3 +24,17 @@ G07,good,Qualitative study,NONE
 G08,good,Causal design with assumptions,NONE
 G09,good,University guideline authority,NONE
 G10,good,Partial document,NONE
+B16,broken,Literature gap overclaim,MEDIUM/HIGH
+B17,broken,Weak literature synthesis,MEDIUM/HIGH
+B18,broken,Citation-reference mismatch,HIGH
+B19,broken,Citation present but unsupported,HIGH
+B20,broken,Close paraphrase risk,HIGH
+B21,broken,Unattributed quotation,HIGH
+B22,broken,Authenticity/provenance risk,MEDIUM/HIGH
+B23,broken,AI style alone is not proof,NONE
+G11,good,Literature scope is explicitly bounded,NONE
+G12,good,Correct citation but weak source not overstated,NONE
+G13,good,Proper quotation,NONE
+G14,good,Legitimate self-reuse disclosed,INFO/NONE
+G15,good,Style shift has alternative explanation,NONE
+G16,good,Early-stage citation list,NONE

@@ -74,7 +74,23 @@ Trace important changes and weak nodes downstream.
 
 Trace conclusions back to results and questions.
 
-### 9. Risks
+### 9. Literature review
+
+Audit review scope, search/selection transparency when supplied, synthesis, competing evidence, gap logic, source quality, and literature-to-RQ/hypothesis/contribution alignment.
+
+### 10. Citation integrity
+
+Audit reference/citation linkage and bibliographic consistency separately from substantive claim support.
+
+### 11. Paraphrase/plagiarism risk
+
+Use source-text comparison when available. Report risk, not misconduct verdicts, unless evidence genuinely supports a stronger conclusion.
+
+### 12. Academic authenticity
+
+Assess provenance and observable writing-pattern anomalies as review signals. Never use stylistic fluency as proof of AI authorship.
+
+### 13. Risks
 
 List plausible concerns that cannot yet be confirmed.
 

@@ -2,28 +2,39 @@
 
 > **Debug your research before your examiner does.**
 
-Thesis Debugger is a Claude Agent Skill that audits academic research as a connected system rather than simply reviewing individual chapters. It looks for hidden logical, methodological, evidential, statistical, data, scope, and cross-document inconsistencies, with **Change Impact Analysis** as its signature workflow.
+Thesis Debugger is a Claude Agent Skill that audits academic research as a connected research system rather than simply reviewing individual chapters. It traces the chain from research questions and literature through theory, hypotheses, variables, methodology, data, analysis, evidence, discussion, and conclusions, with **Change Impact Analysis** as its signature workflow.
 
 ## What it detects
 
 - Research-question/objective mismatch
 - Theory/hypothesis/model mismatch
 - Methodology/research-question mismatch
-- Variable definition drift
-- Sample and numeric inconsistencies
+- Variable and definition drift
+- Measurement and operationalization problems
+- Sample, dataset, and numeric inconsistencies
 - Statistical interpretation problems
-- Causal overclaims
+- Causal overclaims and logic jumps
 - Unsupported or partially supported claims
 - Internal contradictions across chapters/documents
-- Scope inflation
-- Results/conclusion mismatch
-- Research dead ends
+- Scope inflation and completeness gaps
+- Results/discussion/conclusion mismatch
+- Research dead ends and fragile dependencies
 - Downstream effects of research changes
 - Ambiguous supervisor feedback and its likely dependencies
+- Literature-review synthesis, coverage, gap, and contribution risks
+- Reference/citation integrity and claim-source traceability
+- Plagiarism/paraphrase risk when comparison text is supplied
+- Academic-authenticity/provenance risk signals (not a definitive AI detector)
 
 ## Why it exists
 
-A thesis is not a collection of chapters. It is a connected research system. Changing one decision can affect hypotheses, variables, measurements, analyses, discussion, and conclusions. Thesis Debugger makes those dependencies explicit before the researcher edits downstream sections.
+A thesis is not a collection of chapters. It is a connected research system:
+
+`RESEARCH QUESTION → THEORY → HYPOTHESIS → VARIABLES → MEASUREMENT → METHOD → DATA → ANALYSIS → RESULTS → DISCUSSION → CONCLUSION`
+
+A weak link can propagate into downstream sections. Changing one research decision can therefore require changes elsewhere. Thesis Debugger makes those dependencies explicit before the researcher edits downstream sections.
+
+The goal is not to maximize the number of comments. The goal is to identify **material, evidence-grounded research problems** and show what they affect.
 
 ## Signature feature: Change Impact Analysis
 
@@ -31,35 +42,56 @@ Example request:
 
 > I changed my methodology from OLS regression to SEM. What else needs to change?
 
-The skill maps the change through the research dependency graph and reports what requires review, why it is affected, and how urgent the review is. It does not blindly rewrite the thesis.
+The skill maps the change through the research dependency graph and reports:
+
+- what is directly affected
+- what is likely to require an update
+- what has no direct dependency
+- why the dependency exists
+- what should be revalidated before the change is considered complete
+
+It does not blindly rewrite the thesis.
 
 ## Example output
+
+The following is illustrative only; it uses hypothetical research inputs and demonstrates categorical diagnosis rather than an arbitrary overall acceptance probability.
 
 ```text
 # THESIS DEBUG REPORT
 
-Research Health: 72/100 (diagnostic, not a probability of acceptance)
+Research State: CONTESTED
+Decision State: FRAGILE
+Confidence: MODERATE
 
-🔴 Critical: 3
-🟠 High: 6
-🟡 Medium: 11
-🔵 Low: 8
+🔴 Critical: 2
+🟠 High: 4
+🟡 Medium: 5
+🔵 Low: 2
 
 ## 🔴 CRITICAL #001
 Type: METHODOLOGY_ERROR
 Location: Chapter 3 → Research Design
-Problem: The research question asks about causal effects while the stated design may only establish association.
+Problem: The research question asks about a causal effect while the stated design may only establish association.
 Evidence: RQ2 asks “What is the effect of X on Y?”; Chapter 3 describes a cross-sectional survey.
-Reasoning: The stated claim may exceed what the design can identify without additional assumptions/evidence.
+Reasoning: The stated claim may exceed what the design can identify without additional assumptions or evidence.
 Impact: Methodology, interpretation, discussion, conclusion.
 Recommended Action: Clarify the intended estimand/claim and evaluate whether the design supports it.
+
+## 🟠 HIGH #002
+Type: ALIGNMENT_ERROR
+Location: Chapter 5 → Conclusion
+Problem: The conclusion makes a stronger claim than the reported results establish.
+Evidence: The results report an association, while the conclusion uses causal language.
+Reasoning: The inferential strength of the conclusion exceeds the evidence described in the results.
+Impact: Conclusion validity and research claims.
+Recommended Action: Reconcile the conclusion with the actual analysis and evidence.
 ```
 
 ## Installation
 
 ### Claude.ai
 
-Anthropic currently documents custom skills as folders containing a `SKILL.md` plus optional bundled resources. To upload this skill in Claude.ai: zip the `thesis-debugger/` folder so it is the single top-level entry in the ZIP, then go to **Customize → Skills → + → Create skill → Upload a skill** and select the ZIP. The skill can then be enabled from your skills list. This requires the applicable Claude plan/features and code execution support.
+Anthropic documents custom Skills as folders containing a `SKILL.md` plus optional bundled resources. To upload this skill in Claude.ai, zip the `thesis-debugger/` folder so it is the single top-level entry in the ZIP, then use the applicable **Customize → Skills → Create/Upload** flow in your Claude account.
 
 ### Claude Code
 
@@ -67,68 +99,111 @@ Claude Code discovers custom skills from the filesystem. For a personal skill, p
 
 ### API / other Agent Skills-compatible runtimes
 
-Anthropic also supports custom Skills through the Skills API. The uploaded ZIP must contain the skill directory as its single top-level entry. Other Agent Skills-compatible runtimes may use their own registration mechanism; preserve the standard folder structure.
-
-For current product details, see Anthropic's documentation: **Use skills in Claude**, **How to create custom skills**, and **Agent Skills**.
+For Skills-compatible runtimes, preserve the standard skill directory structure and keep `SKILL.md` at the directory root. Follow the host platform's current registration/upload mechanism.
 
 ## Usage
 
-Upload or make available one or more research artifacts, then ask naturally:
+Upload or make available the research artifacts relevant to the audit, then ask naturally:
 
 - `Debug my thesis.`
 - `Find only critical errors.`
 - `Check my methodology.`
 - `Audit my claims and citations.`
+- `Audit my literature review for gaps and weak synthesis.`
+- `Check reference/citation integrity.`
+- `Compare this draft with these sources for paraphrase risk.`
+- `Check academic-authenticity risks without deciding whether AI wrote it.`
 - `Find contradictions across chapters.`
 - `I changed variable X. What else needs to change?`
 - `Prepare me for my thesis defense.`
 - `Find research dead ends.`
 
-Optional aliases include `/debug`, `/health`, `/impact`, `/contradictions`, `/evidence`, `/methodology`, `/data`, `/decisions`, `/feedback`, `/defense`, and `/full-audit`.
+The skill also supports narrower workflows through internal routing, including evidence, literature, citation integrity, methodology, data/statistics, consistency, change impact, supervisor feedback, defense, and academic-integrity analysis.
 
 ## Supported research materials
 
 Designed to work with, when the environment can read them:
 
-- PDF
-- DOCX
-- TXT
-- Markdown
-- CSV
-- XLSX
-- research notes
-- questionnaires
-- supervisor feedback
-- university/project guidelines
-- multiple documents together
+- Theses and dissertations
+- Research papers and manuscripts
+- Research proposals
+- PDF, DOCX, TXT, and Markdown documents
+- CSV/XLSX datasets and research tables
+- Research notes
+- Questionnaires and instruments
+- Reference lists and citation exports
+- Supervisor/advisor feedback
+- University or project guidelines
+- Multiple documents and versions together
+- Supplied source text for plagiarism/paraphrase comparison
 
-The skill does not require a complete thesis. It reports which analyses are impossible when dependencies are missing.
+The skill does not require a complete thesis. It reports which analyses are blocked by missing, ambiguous, or unverified inputs rather than silently filling the gaps.
 
 ## Reliability philosophy
 
-Thesis Debugger is optimized for **high-signal debugging**, not maximum comment volume. A reliable finding must be grounded in evidence. Potential discrepancies are investigated before being promoted to errors.
+Thesis Debugger is optimized for **high-signal research auditing**, not maximum comment volume. A finding should be grounded in available evidence and tied to a material consequence.
 
-The development targets are:
+The system is designed to:
 
-- Critical Error Recall ≥ 90%
+- distinguish observation from inference and recommendation
+- distinguish confirmed errors from likely/potential issues
+- avoid treating missing information as an error
+- preserve stable finding IDs across iterative audits
+- trace critical/high findings to locations when available
+- search for contradictory evidence and alternative explanations
+- separate research-system dependencies from superficial text similarity
+- downgrade severity when evidence is indirect
+- require verification paths for consequential findings
+- avoid fabricating citations, data, results, significance, or provenance
+
+Development targets include:
+
+- Critical/High Error Recall ≥ 90%
 - Finding Precision ≥ 85%
 - False Positive Rate < 15%
 - 100% of critical/high findings should have evidence locations when available
 
-These are development targets, not guarantees.
+These are development targets, not guarantees. Static repository validation is a packaging check, not proof of model-level accuracy. Real evaluation should include adversarial cases, mostly-correct cases, and human review.
 
-## Academic integrity
+## Research integrity
 
-The skill will not fabricate data, citations, sources, results, statistical significance, or supervisor instructions. If a user asks to “make a regression significant,” it should refuse the fabrication and help report or analyze the actual result transparently.
+The skill includes four integrity-focused modules:
+
+**Literature Review Auditor:** evaluates synthesis, competing findings, source relevance/quality, gap logic, contribution alignment, and coverage claims when a defensible search/selection record is available.
+
+**Reference & Citation Integrity Checker:** checks citation↔reference linkage, duplicates, metadata consistency, quotation attribution, citation drift, and whether supplied sources support cited claims. Bibliographic correctness and substantive support are assessed separately.
+
+**Plagiarism / Paraphrase Risk Detection:** compares supplied source and target text for exact overlap, near-exact overlap, close paraphrase, patchwriting, unattributed quotation, and self-overlap. It reports review risk rather than treating similarity alone as proof of misconduct.
+
+**AI-Generated Writing / Academic Authenticity Check:** reviews observable provenance and writing-pattern signals such as abrupt voice shifts, unverifiable citations, generic templating, and version-history gaps. It does not claim that style alone can reliably determine whether AI wrote a passage.
+
+The skill will not fabricate data, citations, sources, results, statistical significance, or supervisor instructions.
+
+## Academic integrity safeguards
+
+If a user asks the skill to fabricate or manipulate research, such as:
+
+- inventing data
+- manufacturing citations
+- changing results to become significant
+- hiding contradictory findings
+- falsely attributing a quotation
+- creating a fake supervisor instruction
+
+the skill should refuse the fabrication and help analyze or report the actual research transparently.
 
 ## Limitations
 
 - It cannot guarantee thesis acceptance or replace an academic supervisor.
 - It should not claim global novelty without sufficient literature evidence.
 - Methodology-specific judgments may require a domain expert.
-- A health score is heuristic, not a probability of passing.
+- Literature-review coverage cannot be claimed exhaustive without a defensible search/selection record.
+- Plagiarism/paraphrase review is risk-based unless source text is available for comparison; similarity is not proof of misconduct.
+- Academic-authenticity review is not a reliable standalone AI detector; style alone cannot establish AI authorship.
+- A health score, when used, is heuristic and not a probability of passing.
 - University-specific requirements should only be evaluated when the relevant policy/guideline is supplied.
 - Statistical conclusions require sufficient data and context.
+- Dataset or source verification may be limited by what the execution environment can actually access.
 
 ## Repository structure
 
@@ -136,14 +211,15 @@ The skill will not fabricate data, citations, sources, results, statistical sign
 thesis-debugger/
 ├── SKILL.md
 ├── README.md
-├── LICENSE
-├── CHANGELOG.md
-├── CONTRIBUTING.md
 ├── references/
 │   ├── audit-framework.md
 │   ├── error-taxonomy.md
 │   ├── methodology-checks.md
 │   ├── evidence-checks.md
+│   ├── literature-review-checks.md
+│   ├── citation-integrity-checks.md
+│   ├── paraphrase-risk-checks.md
+│   ├── authenticity-checks.md
 │   ├── statistical-checks.md
 │   ├── consistency-checks.md
 │   ├── dependency-model.md
@@ -153,37 +229,71 @@ thesis-debugger/
 │   ├── debug-report.md
 │   ├── decision-log.md
 │   └── action-plan.md
-└── examples/
-    ├── broken-thesis.md
-    ├── expected-debug-report.md
-    └── benchmark.md
+├── examples/
+│   ├── broken-thesis.md
+│   ├── integrity-test-pack.md
+│   ├── expected-debug-report.md
+│   ├── benchmark.md
+│   └── benchmark-manifest.csv
+├── scripts/
+│   └── validate.py
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── LICENSE
+└── QUALITY-GATES.md
 ```
 
 ## Roadmap
 
-### v1.1
-Improved evidence auditing.
+### v2.1.0
 
-### v1.2
-Advanced statistical diagnostics.
+- Literature Review Auditor
+- Reference & Citation Integrity Checker
+- Plagiarism / Paraphrase Risk Detection
+- Academic Authenticity / AI-Generated Writing Risk review
+- Integrity-specific finding types and verification requirements
+- Expanded synthetic benchmark coverage
+- Stronger false-positive controls for integrity modules
 
-### v1.3
-More research-method templates.
+### v1.0.0
 
-### v2.0
-Research Project Debugger for broader research and professional reports.
+- Production-oriented research-system debugging workflow
+- Research model and dependency graph
+- Multi-pass diagnostic workflow
+- Change Impact Analysis
+- Evidence-first and false-positive controls
+- Methodology, evidence, statistical, consistency, scope, and causality diagnostics
+- Research decision ledger
+- Research dead-end detection
+- Supervisor feedback translation and impact analysis
+- Defense simulator
+- Severity taxonomy and heuristic research health score
+- Incomplete-document handling and academic-integrity safeguards
 
-Potential future domains include grant proposals, business research, consulting reports, policy research, and technical reports. A future continuous research monitor could track changes, new risks, and resolved findings over time.
+### Future
+
+- Expanded domain-specific benchmark suites
+- More automated dependency and version-diff reporting
+- Additional statistical and methodological edge cases
+- Broader evaluation tooling for false positives and critical/high finding recall
+- Research-project monitoring across evolving document versions
 
 ## License
 
-MIT. See `LICENSE`.
+Released under the MIT License. See `LICENSE`.
 
 ## Ecosystem context
 
-Anthropic's public Agent Skills repository describes skills as self-contained folders with `SKILL.md` plus optional bundled resources, and its skill-creator guidance recommends keeping the main skill focused and using reference files for progressive disclosure. Existing public academic skills tend to emphasize writing, literature/research workflows, or broader research agents; Thesis Debugger is intentionally narrower around connected-system debugging and change impact analysis.
+Thesis Debugger is one component of a broader **Debugger Series**: tools built around the idea that many bad outcomes come from errors in the reasoning process before the final answer, research conclusion, or decision.
 
+Financial Debugger applies the same philosophy to financial decisions. Thesis Debugger applies it to connected academic research systems.
 
 ## Validation
 
-Run `python scripts/validate.py` to validate packaging and benchmark completeness. Static validation cannot prove model-level accuracy; evaluate the skill in Claude against the supplied benchmark and manually review findings.
+Run:
+
+```bash
+python scripts/validate.py
+```
+
+before release. Static validation checks repository integrity and test coverage; it does not prove that the model will make every research judgment correctly.

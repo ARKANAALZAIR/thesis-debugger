@@ -107,3 +107,65 @@ Purpose: evaluate recall, precision, traceability, and false-positive control. A
 ### G10 — Partial document
 **Input:** Only Chapter 1 is available. It contains RQs and objectives but no methodology/results.
 **Expected:** Perform supported structure/alignment checks; explicitly state that downstream dependency analysis is unavailable. Do not invent findings about missing chapters.
+
+
+## Integrity and literature cases — expected behavior
+
+### B16 — Literature gap overclaim
+**Input:** Review claims “no studies have examined X,” but supplied literature includes two directly relevant studies on X in the same population and period.
+**Expected:** LITERATURE_REVIEW_ERROR / SCOPE_ERROR, HIGH or MEDIUM depending on contribution centrality.
+**Do not flag:** If the claim is explicitly narrowed to a different context and the cited studies are outside that scope.
+
+### B17 — Weak literature synthesis
+**Input:** Ten studies are summarized one-by-one; the review never compares methods, findings, contradictions, or unresolved issues, yet claims a strong theoretical gap.
+**Expected:** LITERATURE_REVIEW_ERROR, MEDIUM/HIGH.
+
+### B18 — Citation-reference mismatch
+**Input:** Text cites “Smith, 2024,” but bibliography has no Smith 2024 entry; another entry uses the same author/year label for a different paper.
+**Expected:** CITATION_INTEGRITY_ERROR, HIGH when the citation supports a central claim.
+
+### B19 — Citation present but unsupported
+**Input:** Citation is correctly formatted and linked to a source, but the supplied source only reports correlation while the thesis states the source proves causality.
+**Expected:** CITATION_SUPPORT_RISK / EVIDENCE_ERROR / CAUSALITY_ERROR, HIGH.
+
+### B20 — Close paraphrase
+**Input:** Supplied source passage and target draft preserve distinctive wording and sentence structure with minor synonym swaps and no quotation/clear attribution.
+**Expected:** PARAPHRASE_RISK, HIGH when evidence is direct; include both locations and minimum matched evidence.
+
+### B21 — Unattributed quotation
+**Input:** Distinctive source wording appears in draft without quotation marks, despite a citation.
+**Expected:** PARAPHRASE_RISK or CITATION_INTEGRITY_ERROR, HIGH depending on extent.
+
+### B22 — Authenticity risk from provenance + voice shift
+**Input:** Supplied drafts show an unexplained abrupt change in terminology/style, several citations cannot be traced, and authorship/provenance is undocumented.
+**Expected:** AUTHENTICITY_RISK / PROVENANCE_RISK, MEDIUM/HIGH with explicit alternative explanations and human verification steps.
+
+### B23 — AI style alone is not proof
+**Input:** Writing is polished, formal, and generic but all sources and revision history supplied are consistent.
+**Expected:** No AI-authorship finding. At most INFO about provenance if the user requested it and evidence is genuinely incomplete.
+
+## Mostly-correct integrity cases
+
+### G11 — Literature scope is explicitly bounded
+**Input:** Review says “Within Indonesian public universities from 2021–2025, five studies were identified” and provides a documented search strategy plus inclusion criteria.
+**Expected:** Do not flag “not exhaustive globally.”
+
+### G12 — Correct citation but weak source not overstated
+**Input:** Source reports association and thesis says “associated with.”
+**Expected:** No citation-support or causality error.
+
+### G13 — Proper quotation
+**Input:** Exact source wording is in quotation marks with citation and page/section locator.
+**Expected:** No paraphrase-risk finding.
+
+### G14 — Legitimate self-reuse disclosed
+**Input:** Thesis reuses a methods description from the author's prior proposal, with disclosure and supervisor/institution context supplied.
+**Expected:** No automatic plagiarism finding; optionally INFO about policy verification.
+
+### G15 — Style shift has an alternative explanation
+**Input:** One chapter is more formal because it was edited by a supervisor; revision notes document the edit.
+**Expected:** No authenticity finding from style alone.
+
+### G16 — Citation list is incomplete because sources are still being added
+**Input:** Draft explicitly marked as early-stage and user asks whether citation integrity can be completed.
+**Expected:** Report incomplete verification, not a fabricated citation error.
