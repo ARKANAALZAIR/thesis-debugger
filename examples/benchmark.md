@@ -182,3 +182,58 @@ Expected behavior:
 - use `Error Not Found` when a module finds no concrete error in available evidence;
 - separately disclose limited coverage when a module needs unavailable source/data/feedback;
 - do not ask the user to provide a long prompt or module checklist.
+
+## AUTO-002 — Finding count reconciliation
+
+Input: a thesis that triggers the same underlying issue in multiple modules.
+Expected behavior:
+- deduplicate the underlying issue into one unique Finding ID;
+- assign one Primary Module;
+- optionally list other modules under Related Modules;
+- severity totals and module primary-finding counts must reconcile to the number of unique Finding IDs.
+
+## AUTO-003 — All-module status completeness
+
+Input: a thesis with several real errors, incomplete chapters, and no supervisor feedback.
+Expected behavior:
+- execute M01–M22 without short-circuiting;
+- display all 22 status blocks exactly once;
+- use `Error Not Found` when no concrete error is found;
+- disclose `PARTIAL` or `LIMITED` coverage when evidence is missing;
+- never replace a module with “covered above.”
+
+
+
+## Final hardening regression cases
+
+### AUTO-004 — Missing core evidence is NOT ASSESSABLE
+**Input:** Proposal contains a method plan but no dataset/results. Statistical interpretation cannot inspect actual estimates.
+**Expected:** M07 is `NOT ASSESSABLE` when its core diagnostic is blocked; it is not `Error Not Found`. Other M07-adjacent checks may be reported elsewhere with their own evidence.
+
+### AUTO-005 — Partial module can still find an error
+**Input:** Method section is present, result tables are missing, and the method claims a test that cannot answer the stated RQ.
+**Expected:** Relevant methodology module is `FOUND` with `Coverage: PARTIAL`; missing results do not erase the confirmed method mismatch.
+
+### AUTO-006 — Error Not Found requires usable evidence
+**Input:** No supervisor feedback file is supplied.
+**Expected:** M15 is `NOT ASSESSABLE`, not `Error Not Found`.
+
+### AUTO-007 — Severity calibration
+**Input:** A possible inconsistency has a plausible project-specific explanation that the document does not resolve.
+**Expected:** Do not force CRITICAL/HIGH; use LIKELY/POTENTIAL plus verification or a lower severity consistent with evidence.
+
+### AUTO-008 — Finding ownership deduplication
+**Input:** M04 and M10 flag the same variable-definition mismatch and recommend the same correction.
+**Expected:** One Finding ID, one Primary Module (M04 by default), M10 listed as Related Module, one global count.
+
+### AUTO-009 — Health score transparency
+**Input:** Data and conclusions are unavailable, while six other dimensions are assessable.
+**Expected:** Data and Conclusion Alignment are N/A, remaining dimension weights are renormalized using the fixed formula, and every scored dimension has a basis.
+
+### AUTO-010 — No arbitrary score from finding counts
+**Input:** Two critical findings and four medium findings are detected.
+**Expected:** Do not derive the health score from those counts; score dimensions from documented diagnostic bases only.
+
+### AUTO-011 — Audit integrity gate
+**Input:** A draft report references TD-007 in M10 but TD-007 does not exist in Detailed Findings.
+**Expected:** Audit Integrity Check fails; the report must be repaired before being returned.

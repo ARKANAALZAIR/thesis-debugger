@@ -1,5 +1,29 @@
 # Changelog
 
+## 2.2.2 — Final Hardening Pass
+
+- Added strict `NOT ASSESSABLE` semantics for modules whose core diagnostic inputs are missing.
+- Separated module status from coverage so partial evidence cannot masquerade as a clean audit.
+- Added final audit-integrity and reconciliation rules for 22-module execution, finding IDs, primary ownership, severity, and orphan references.
+- Added root-cause ownership precedence to reduce cross-module double counting.
+- Hardened CRITICAL/HIGH severity calibration against low-confidence escalation and unresolved alternative explanations.
+- Added a fixed, auditable health-score weighting and renormalization formula with dimension-level basis requirements.
+- Added final `Audit Integrity Check` to the report contract and template.
+- Restored/expanded full-audit regression coverage for activation, state semantics, deduplication, severity, and scoring transparency.
+
+2.2.1 — Full-Audit Output Hardening
+
+- Added a canonical M01–M22 module registry with deterministic names and IDs.
+- Enforced non-short-circuit execution for broad thesis audits.
+- Added `Execution: COMPLETE` to every module status block.
+- Added canonical finding ownership via `Primary Module` and unique finding IDs.
+- Added severity and module-count reconciliation rules to prevent inconsistent totals.
+- Clarified `FOUND` vs `Error Not Found` semantics and coverage boundaries.
+- Made the Change Impact baseline explicitly mandatory even without an `OLD → NEW` change.
+- Added health-score integrity rules so missing evidence is not silently scored as zero.
+- Expanded validation to check the canonical module registry, output schema, template, and regression contract.
+- Added two activation/regression benchmark cases for count reconciliation and all-module completeness.
+
 ## 2.2.0 — Automatic Full-Audit Activation
 
 - Broad requests such as `audit thesis berikut` now automatically trigger FULL THESIS DEBUG.

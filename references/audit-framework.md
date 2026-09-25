@@ -105,7 +105,7 @@ Before labeling a discrepancy an error, ask:
 - Is the method valid for the stated design under a named assumption?
 - Is the apparent contradiction resolved by scope or time period?
 
-If yes and the thesis explains it, do not report an error. If the explanation is plausible but not documented, report a potential traceability issue rather than a contradiction.
+If yes and the thesis explains it, do not report an error. If the explanation is plausible but not documented, report a potential traceability issue rather than a contradiction. If the core diagnostic input is absent, use `NOT ASSESSABLE` rather than `Error Not Found`.
 
 
 ## Broad-audit automation contract
@@ -115,3 +115,8 @@ A broad request like “audit thesis berikut” is a FULL THESIS DEBUG request. 
 The audit is incomplete until every module has an explicit status. If no concrete error is found in a module, report `Status: Error Not Found`; if inputs are missing, also report the coverage limitation and verification requirement.
 
 Before finalizing, validate: (1) all 22 modules appear exactly once, (2) no module is silently skipped, (3) finding counts reconcile with the visible findings, and (4) `Error Not Found` is not used as a substitute for missing evidence.
+
+
+## Final hardening rule
+
+The final report is a data-reconciliation problem as well as a reasoning problem. The model must count unique finding IDs, assign one owner per finding, validate module-state semantics, calibrate severity to evidence, and make every health-score number traceable to a documented basis.

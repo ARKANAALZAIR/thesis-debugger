@@ -39,3 +39,13 @@ G14,good,Legitimate self-reuse disclosed,INFO/NONE
 G15,good,Style shift has alternative explanation,NONE
 G16,good,Early-stage citation list,NONE
 AUTO-001,activation,broad prompt "audit thesis berikut" triggers full audit,INFO
+AUTO-002,activation,finding count reconciliation across modules,INFO
+AUTO-003,activation,all 22 module status blocks exactly once,INFO
+AUTO-004,hardening,missing core evidence uses NOT ASSESSABLE,INFO
+AUTO-005,hardening,partial evidence can still produce FOUND,INFO
+AUTO-006,hardening,supervisor feedback absence is NOT ASSESSABLE,INFO
+AUTO-007,hardening,severity calibration against unresolved alternatives,INFO
+AUTO-008,hardening,root-cause deduplication and primary ownership,INFO
+AUTO-009,hardening,health-score weights renormalize over assessable dimensions,INFO
+AUTO-010,hardening,finding counts never become a score,INFO
+AUTO-011,hardening,audit integrity catches orphan finding IDs,INFO

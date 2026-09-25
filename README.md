@@ -94,7 +94,7 @@ Attach the thesis and simply write:
 
 > **audit thesis berikut**
 
-That short request automatically activates **FULL THESIS DEBUG** and runs all supported audit modules. The user does not need to list features or type a long prompt. Every module is shown in the final report. When a module finds no concrete error in the available evidence, its status is explicitly shown as **`Error Not Found`**. Missing evidence is disclosed separately as limited coverage.
+As of v2.2.2, that short request automatically activates **FULL THESIS DEBUG** and runs all 22 supported audit modules. The user does not need to list features or type a long prompt. Every module is shown in the final report. A module with adequate evidence and no concrete error is **`Error Not Found`**; when required core evidence is absent, the module is **`NOT ASSESSABLE`** rather than being falsely reported as clean. The report also reconciles unique findings, module ownership, severity, and health-score calculations.
 
 ## Installation
 
@@ -297,6 +297,17 @@ Released under the MIT License. See `LICENSE`.
 Thesis Debugger is one component of a broader **Debugger Series**: tools built around the idea that many bad outcomes come from errors in the reasoning process before the final answer, research conclusion, or decision.
 
 Financial Debugger applies the same philosophy to financial decisions. Thesis Debugger applies it to connected academic research systems.
+
+## Final hardening
+
+The full-audit contract now enforces four safeguards:
+
+- **Evidence-state separation:** `FOUND`, `Error Not Found`, and `NOT ASSESSABLE` are distinct states.
+- **Finding reconciliation:** every finding has one unique ID and one primary module; cross-module detection does not double-count the issue.
+- **Severity calibration:** CRITICAL/HIGH requires evidence strength commensurate with the claimed impact; plausible alternative explanations are checked before escalation.
+- **Auditable health score:** fixed dimension weights, renormalization over assessable dimensions, a basis for every scored dimension, and `N/A` when evidence is insufficient.
+
+These are diagnostic safeguards, not a guarantee of model-level accuracy.
 
 ## Validation
 

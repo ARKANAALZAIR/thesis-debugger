@@ -25,8 +25,8 @@ The defining capability is **change impact analysis**: when a research decision 
 10. **Integrity limits.** Treat plagiarism/paraphrase and AI-authorship review as risk assessment unless matching source text or stronger provenance evidence is actually supplied. Never state that a text was definitely AI-written or definitely plagiarized from style alone.
 11. **Simple-prompt full-audit behavior.** When a thesis/research document is supplied and the user asks broadly to “audit”, “debug”, “review”, “check”, or equivalent without naming a narrower module, run the **FULL THESIS DEBUG** workflow automatically. Do not require a long prompt, a slash command, or a module checklist.
 12. **All modules must be shown.** In FULL THESIS DEBUG, every supported diagnostic module executes and every module appears in the final report, even when no issue is found.
-13. **Explicit no-error status.** If a module runs and finds no concrete error in the available evidence, show `Status: Error Not Found`. Do not silently omit the module.
-14. **Evidence-availability transparency.** `Error Not Found` means no concrete error was found in the evidence available to the module; it does not mean the research is globally error-free. When evidence is unavailable, also show `Coverage: Limited` and the missing verification needed.
+13. **Explicit module-state semantics.** Every full-audit module must end in exactly one of `FOUND`, `Error Not Found`, or `NOT ASSESSABLE`. `Error Not Found` means the core diagnostic was materially assessable and no concrete error was found; `NOT ASSESSABLE` means a required core input is absent.
+14. **Coverage transparency.** Coverage is reported separately as `FULL`, `PARTIAL`, or `LIMITED`. Do not use `Error Not Found` as a substitute for missing core evidence, and never imply the research is globally error-free.
 15. **No prompt burden.** Never tell the user to restate all desired audit modules when the request is a broad thesis audit; the skill itself expands the request into the full workflow.
 
 ## Activation and request routing
@@ -179,32 +179,160 @@ Generate examiner-style questions from actual detected weaknesses, fragile depen
 ### Module 22 — Prioritized action plan
 Order actions by dependency and severity. Separate confirmed errors from verification tasks, potential concerns, and suggestions.
 
-### Required module status
+## Production hardening — v2.2.2 canonical execution contract
 
-Every module must produce an explicit result block in FULL THESIS DEBUG:
+The following rules are mandatory for every **FULL THESIS DEBUG** run. They harden execution completeness, module-state semantics, deduplication, severity calibration, health-score transparency, and final reconciliation.
+
+### A. Full-audit execution is non-short-circuiting
+
+- Once a broad audit request is detected, execute **all 22 modules** in the canonical registry below before composing the final report.
+- Do not stop early because a CRITICAL/HIGH finding has already been found.
+- Do not ask the user which modules they want.
+- Do not replace a module with “covered above.” Each module gets its own status block.
+- A module may reuse evidence discovered by another module, but it still executes its own diagnostic question.
+
+### B. Canonical 22-module registry
+
+Use these IDs and names exactly:
+
+| ID | Canonical module name |
+|---|---|
+| M01 | Research structure & RQ/objective alignment |
+| M02 | Theory / hypothesis / model alignment |
+| M03 | Methodology / research-question fit |
+| M04 | Variable and definition drift |
+| M05 | Measurement & operationalization |
+| M06 | Sample / dataset / numeric consistency |
+| M07 | Statistical interpretation |
+| M08 | Logic / causality |
+| M09 | Evidence / claim support |
+| M10 | Internal consistency / contradictions |
+| M11 | Scope / completeness |
+| M12 | Results / discussion / conclusion alignment |
+| M13 | Research dead ends / fragile dependencies |
+| M14 | Change Impact Analysis baseline |
+| M15 | Supervisor feedback translator |
+| M16 | Literature Review Auditor |
+| M17 | Reference & Citation Integrity |
+| M18 | Plagiarism / Paraphrase Risk |
+| M19 | Academic Authenticity / Provenance Risk |
+| M20 | Research Decisions Ledger |
+| M21 | Defense Risk Simulation |
+| M22 | Prioritized Action Plan |
+
+### C. Canonical module result block
+
+Every module must emit exactly one block, in M01→M22 order:
 
 ```text
-MODULE: [module name]
-Status: FOUND | Error Not Found
+MODULE ID: M01
+MODULE: Research structure & RQ/objective alignment
+Execution: COMPLETE
+Status: FOUND | Error Not Found | NOT ASSESSABLE
 Coverage: FULL | PARTIAL | LIMITED
-Key findings: [n or brief statement]
-Evidence: [location/evidence or NONE FOUND]
-Verification needed: [if any]
+Key findings: [integer count of PRIMARY findings owned by this module]
+Evidence: [locations/evidence or NONE FOUND]
+Verification needed: [text or NONE]
 ```
 
-If the module completes without finding a concrete error in the available evidence, use exactly:
+### D. Exact status decision rule
 
-`Status: Error Not Found`
+```text
+Can the module materially answer its core diagnostic question from the supplied evidence?
+├─ NO → Status: NOT ASSESSABLE
+│       Coverage: LIMITED
+│       Verification needed: identify the missing core input
+└─ YES
+   ├─ Concrete error/issue found → Status: FOUND
+   └─ No concrete error/issue found → Status: Error Not Found
+```
 
-Do not omit the module. Do not use `Error Not Found` to conceal a missing-input limitation; pair it with `Coverage: PARTIAL` or `Coverage: LIMITED` and state what could not be verified.
+`PARTIAL` coverage may be used with `FOUND` or `Error Not Found` when the core diagnostic can run but some sub-checks are blocked.
 
-### Full-audit execution order
+Important:
+- Suggestions and INFO observations alone do not force `FOUND`.
+- Missing evidence is not a finding.
+- `NOT ASSESSABLE` does not mean “the module is clean”; it means the evidence boundary prevents a determination.
+- `Error Not Found` does not mean the research is globally error-free.
 
-Run the modules in this order so downstream reasoning can use upstream findings:
+### E. Canonical finding ownership and reconciliation
 
-`1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → 22`
+Every finding in the detailed findings section must have:
 
-Before finalizing, perform a cross-check pass to deduplicate findings, downgrade unsupported severity, verify finding counts, and confirm that every module appears exactly once.
+```text
+Finding ID: TD-###
+Primary Module: M##
+Related Modules: [optional]
+Type:
+Status: CONFIRMED ERROR | LIKELY ISSUE | POTENTIAL ISSUE | SUGGESTION | INFO
+Severity: CRITICAL | HIGH | MEDIUM | LOW | INFO
+Confidence:
+Location:
+Problem:
+Evidence:
+Reasoning:
+Impact:
+Recommended Action:
+Verification Needed:
+```
+
+Rules:
+1. Finding IDs are globally unique within the report.
+2. Every finding has exactly one Primary Module.
+3. Related modules must reuse the same finding ID and never create another global count.
+4. Global severity totals are computed from the canonical finding objects, not estimated separately.
+5. `Critical + High + Medium + Low + Info = Total unique findings`.
+6. `sum(M01…M22 primary-finding counts) = Total unique findings`.
+7. Deduplicate only when root cause, evidence/location, and corrective action materially match. Different roots/actions remain separate.
+8. When overlap occurs, prefer the root-cause module as Primary Module. See `references/audit-integrity.md`.
+9. Before finalizing, verify there are no orphan finding IDs, phantom module references, or duplicate root causes.
+
+### F. Severity calibration
+
+Severity must reflect both impact and evidence strength.
+
+- `CRITICAL` normally requires `CONFIRMED ERROR` plus fundamental validity/dependency impact.
+- `HIGH` requires `CONFIRMED ERROR` or a strongly supported `LIKELY ISSUE` with material downstream impact.
+- Do not promote low-confidence findings because their hypothetical impact is large.
+- Run an alternative-explanation check before CRITICAL/HIGH classification.
+- Preferences, generic advice, and style concerns are not automatically errors.
+
+### G. Health-score integrity
+
+Auditability rule: every score is traceable to evidence; no score is inferred from finding counts.
+
+Use the fixed diagnostic weights and formula in `references/audit-integrity.md` when an overall score is reported. Every scored dimension must include a basis. `N/A` is required for dimensions that are not materially assessable; missing evidence must never be silently converted to zero. If fewer than four core dimensions are assessable, prefer `Overall: N/A`.
+
+### H. Change Impact baseline
+
+M14 runs even when no explicit change is supplied. Report the highest-sensitivity nodes and downstream review implications, but do not invent an `OLD → NEW` change. Use `Baseline only — no explicit change supplied.` when appropriate.
+
+### I. Final reconciliation gate
+
+Final Audit Integrity Check must be explicitly rendered as `Audit Integrity Check` in the report.
+
+Before final output, repair any inconsistency until all of these are true:
+
+```text
+[ ] FULL THESIS DEBUG triggered from broad request
+[ ] M01–M22 executed and displayed exactly once
+[ ] Every module has Execution: COMPLETE
+[ ] Every module has Status + Coverage + Key findings + Evidence + Verification
+[ ] NOT ASSESSABLE is used for missing core evidence
+[ ] Error Not Found is not used as a substitute for missing core evidence
+[ ] Every finding has one unique ID and one Primary Module
+[ ] Related-module references are valid
+[ ] No duplicate underlying root cause is counted twice
+[ ] Severity totals reconcile to unique finding count
+[ ] Module primary-finding totals reconcile to unique finding count
+[ ] CRITICAL/HIGH classifications pass confidence/evidence calibration
+[ ] Every health-score dimension has a basis or N/A
+[ ] Overall score formula is auditable or N/A
+[ ] Change Impact baseline is present
+[ ] Final debug state is present
+```
+
+If any gate fails, repair the report before returning it.
 
 ## Change Impact Analysis — signature workflow
 
@@ -289,7 +417,7 @@ Produce a 0–100 diagnostic indicator only when enough evidence exists. Suggest
 - Analysis
 - Conclusion Alignment
 
-Use a weighted average only when dimensions are meaningfully assessed; otherwise state that the score is provisional. Never describe the score as a probability of acceptance/passing. Explain that scoring is heuristic and evidence-dependent.
+Use the fixed dimension weights and renormalized formula in `references/audit-integrity.md`. Never score missing evidence as zero. Never describe the score as a probability of acceptance/passing. Every scored dimension needs a short basis.
 
 ## Academic integrity finding rules
 
@@ -327,7 +455,9 @@ If a field cannot be established, say `NOT AVAILABLE` or `INSUFFICIENT EVIDENCE`
 
 ## Default report
 
-For a broad thesis audit, always follow `references/output-schema.md` and `templates/debug-report.md`. The report must include the executive summary, health score, finding summary, and a visible status block for **all 22 modules**. Do not collapse modules into one paragraph and do not omit `Error Not Found` modules.
+For a broad thesis audit, always follow `references/output-schema.md` and `templates/debug-report.md`. The report must include the executive summary, health score, finding summary, the **full 22-module status matrix**, all detailed findings, coverage limits, change-impact baseline, and final debug state.
+
+Before returning the report, the v2.2.2 reconciliation gate in `references/audit-integrity.md` must pass: all M01–M22 appear exactly once, module/severity totals reconcile to unique finding IDs, missing core evidence is classified as `NOT ASSESSABLE`, and health-score bases are auditable.
 10. Academic Authenticity Risk
 11. Consistency Audit
 12. Dependency Analysis

@@ -37,3 +37,17 @@ Useful observation with no required action.
 ## Confidence interaction
 
 Do not promote a low-confidence finding to CRITICAL merely because the hypothetical impact is large. A high-impact uncertainty should be reported as a potential risk until evidence improves.
+
+
+## Final hardening rules
+
+Severity must not be inferred from hypothetical impact alone.
+
+Before assigning CRITICAL or HIGH, verify:
+
+1. The evidence is direct enough for the stated confidence.
+2. A plausible project-specific alternative explanation has been checked.
+3. The issue is an error/risk rather than a preference or generic recommendation.
+4. The claimed downstream impact is actually connected by a supported dependency.
+
+A low-confidence issue with a potentially large impact should remain a potential/verification item until the evidence strengthens.
