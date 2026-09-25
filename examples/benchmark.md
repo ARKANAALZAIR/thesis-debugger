@@ -169,3 +169,16 @@ Purpose: evaluate recall, precision, traceability, and false-positive control. A
 ### G16 — Citation list is incomplete because sources are still being added
 **Input:** Draft explicitly marked as early-stage and user asks whether citation integrity can be completed.
 **Expected:** Report incomplete verification, not a fabricated citation error.
+
+
+## AUTO-001 — Broad prompt must trigger full audit
+
+Input: a readable thesis plus the short prompt `audit thesis berikut`.
+
+Expected behavior:
+- automatically run FULL THESIS DEBUG;
+- execute all supported modules;
+- display every module status;
+- use `Error Not Found` when a module finds no concrete error in available evidence;
+- separately disclose limited coverage when a module needs unavailable source/data/feedback;
+- do not ask the user to provide a long prompt or module checklist.

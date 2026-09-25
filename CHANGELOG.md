@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.2.0 — Automatic Full-Audit Activation
+
+- Broad requests such as `audit thesis berikut` now automatically trigger FULL THESIS DEBUG.
+- Removed the need for users to enumerate audit modules or type a long prompt for the standard thesis audit.
+- Added a 22-module full-audit contract covering logic, methodology, evidence, consistency, literature, citation integrity, paraphrase risk, academic authenticity, change impact, feedback, decisions, defense, and action planning.
+- Every full audit now shows an explicit status for every module.
+- Added `Status: Error Not Found` for modules that complete without finding a concrete error in the available evidence.
+- Added explicit coverage/verification fields so `Error Not Found` is not mistaken for proof that the thesis is globally error-free.
+- Added a baseline Change Impact scan even when no explicit `OLD → NEW` change is supplied.
+- Added an auto-trigger benchmark case for the short prompt workflow.
+
+# Changelog
+
 ## 2.1.0 — Research Integrity & Literature Audit Expansion
 
 - Added Literature Review Auditor for scope, synthesis, evidence balance, gap logic, and literature-to-research alignment.

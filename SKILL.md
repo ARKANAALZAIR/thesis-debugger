@@ -23,13 +23,47 @@ The defining capability is **change impact analysis**: when a research decision 
 8. **Respect source hierarchy.** If supplied, university policy outranks generic convention; supervisor instructions outrank generic advice; project decisions outrank generic recommendations.
 9. **Academic integrity.** Never help fabricate data, significance, results, citations, or evidence.
 10. **Integrity limits.** Treat plagiarism/paraphrase and AI-authorship review as risk assessment unless matching source text or stronger provenance evidence is actually supplied. Never state that a text was definitely AI-written or definitely plagiarized from style alone.
-11. **Concise by default.** Surface critical/high findings first; offer deeper passes when requested.
+11. **Simple-prompt full-audit behavior.** When a thesis/research document is supplied and the user asks broadly to “audit”, “debug”, “review”, “check”, or equivalent without naming a narrower module, run the **FULL THESIS DEBUG** workflow automatically. Do not require a long prompt, a slash command, or a module checklist.
+12. **All modules must be shown.** In FULL THESIS DEBUG, every supported diagnostic module executes and every module appears in the final report, even when no issue is found.
+13. **Explicit no-error status.** If a module runs and finds no concrete error in the available evidence, show `Status: Error Not Found`. Do not silently omit the module.
+14. **Evidence-availability transparency.** `Error Not Found` means no concrete error was found in the evidence available to the module; it does not mean the research is globally error-free. When evidence is unavailable, also show `Coverage: Limited` and the missing verification needed.
+15. **No prompt burden.** Never tell the user to restate all desired audit modules when the request is a broad thesis audit; the skill itself expands the request into the full workflow.
 
 ## Activation and request routing
 
-Infer the operation from natural language. Supported aliases include:
+### Default behavior: broad thesis-audit requests automatically become FULL THESIS DEBUG
 
-- `/debug` or “debug my thesis” → full diagnostic
+When the user supplies a thesis, proposal, dissertation, research paper, or equivalent research package and uses a broad request such as:
+
+- “audit thesis berikut”
+- “audit skripsi ini”
+- “debug thesis ini”
+- “cek thesis saya”
+- “review skripsi berikut”
+- “audit this thesis”
+
+run the **FULL THESIS DEBUG** workflow automatically. The user must not need to type `/full-audit` or repeat the feature list.
+
+The activation rule is:
+
+```text
+RESEARCH DOCUMENT SUPPLIED
+        +
+BROAD AUDIT / DEBUG / REVIEW / CHECK REQUEST
+        ↓
+AUTOMATIC FULL THESIS DEBUG
+        ↓
+RUN ALL SUPPORTED MODULES
+        ↓
+DISPLAY ALL MODULES
+```
+
+Do not ask a clarification question solely to determine which audit modules to run. If the document is readable, begin the audit.
+
+### Supported explicit aliases
+
+Users may still request narrower workflows when they explicitly name one, for example:
+
 - `/health` → health score and highest-risk findings
 - `/impact` → change impact analysis
 - `/contradictions` → cross-document consistency audit
@@ -45,7 +79,7 @@ Infer the operation from natural language. Supported aliases include:
 - `/defense` → research-specific defense simulation
 - `/full-audit` → all supported passes
 
-If the request is narrow, do not run an unnecessary full audit.
+When a user explicitly requests a narrow module, obey the narrower request. When the request is broad, default to FULL THESIS DEBUG.
 
 ## Input inventory
 
@@ -75,56 +109,102 @@ Use relationships such as:
 
 Do not create nodes merely because the template contains them. Mark absent information as unavailable rather than inferred.
 
-## Multi-pass audit workflow
+## FULL THESIS DEBUG — always-on workflow
 
-Run only the passes relevant to the request, but for a full audit use this order:
+For every broad thesis audit, run the following modules in one complete pass. Do not stop after finding the first error. Continue until every module has been evaluated.
 
-### Pass 1 — Structure
-Map sections, research questions, objectives, theory, hypotheses, variables, methods, results, discussion, and conclusions. Record missing or ambiguous components.
+### Module 1 — Research structure and RQ/objective alignment
+Map research questions, objectives, scope, contribution, chapter structure, and core research entities. Check research-question/objective mismatch.
 
-### Pass 2 — Research logic
-Check RQ → objective → theory → hypothesis → variable → method → result → conclusion alignment. Look for logical gaps and unsupported transitions.
+### Module 2 — Theory / hypothesis / model alignment
+Check theory → construct → hypothesis/model → test alignment. Flag unsupported theory-to-hypothesis jumps, model mismatches, and unused constructs.
 
-### Pass 3 — Methodology
-Read `references/methodology-checks.md`. Test whether the stated design can answer the research question and whether population, sample, measurement, collection, and analysis are compatible. Do not assume a universal method.
+### Module 3 — Methodology / research-question fit
+Test whether the stated research design, population, sampling, data collection, and analysis can answer each research question. Do not impose universal methods.
 
-### Pass 4 — Evidence and citations
-Read `references/evidence-checks.md`. For important claims, distinguish citation presence from actual support. Classify support as `SUPPORTED`, `PARTIAL`, `UNSUPPORTED`, `CONTRADICTED`, or `INSUFFICIENT EVIDENCE`.
+### Module 4 — Variable and definition drift
+Track each key variable/construct across chapters, instruments, tables, figures, analysis, and conclusions. Detect changes in meaning, label, unit, coding, or scope.
 
-### Pass 5 — Literature Review Audit
-Read `references/literature-review-checks.md`. Audit the review as a synthesized argument rather than a list of summaries. Check search/selection transparency when supplied, coverage of directly relevant literature, thematic synthesis, chronology where material, seminal versus recent evidence balance, competing findings, gap logic, source quality, cherry-picking risk, duplicate/overlapping claims, and whether the stated contribution actually follows from the reviewed literature. Never claim that a literature search is globally exhaustive unless the search strategy and evidence justify that conclusion.
+### Module 5 — Measurement and operationalization
+Check construct definitions, indicators, instruments, scales, units, operational definitions, reliability/validity evidence where relevant, and alignment between conceptual and measured variables.
 
-### Pass 6 — Reference & Citation Integrity
-Read `references/citation-integrity-checks.md`. Check citation-reference linkage, uncited references, citations with missing reference entries, duplicate references, metadata inconsistencies, suspiciously incomplete bibliographic records, claim-source mismatch, quotation attribution, DOI/URL traceability when supplied, and citation drift across revisions. Distinguish bibliographic integrity from substantive source support; a perfectly formatted citation can still fail to support a claim. Never invent or “repair” bibliographic metadata without evidence.
+### Module 6 — Sample, dataset, and numeric consistency
+Cross-check N, sample counts, exclusions, treatment/group counts, totals, units, dates, reported values, tables, figures, appendices, and any supplied dataset.
 
-### Pass 7 — Plagiarism / Paraphrase Risk
-Read `references/paraphrase-risk-checks.md`. Compare supplied texts against each other for exact/near-exact overlap, close paraphrase, patchwriting, unattributed quotation, structure-preserving paraphrase, and self-overlap. Report `RISK` or `REVIEW NEEDED` unless a supplied source text and matching passage provide sufficient evidence for a stronger statement. Do not use generic style similarity as proof of plagiarism.
+### Module 7 — Statistical interpretation
+Read `references/statistical-checks.md`. Audit model/test fit, assumptions where material, interpretation of p-values/effect sizes/intervals, multiple testing claims, table arithmetic when supported, and whether conclusions overstate the analysis.
 
-### Pass 8 — Academic Authenticity / AI-Generated Writing Risk
-Read `references/authenticity-checks.md`. Assess provenance and writing-pattern risk only from observable evidence such as abrupt voice shifts, templated phrasing, unverifiable or mismatched citations, repeated generic claims, inconsistent terminology, revision-history/provenance gaps, or supplied authorship statements. This is an authenticity-risk review, not an AI detector. Never infer AI authorship from fluency, grammar, sophistication, or style alone. Separate style anomalies from source/evidence anomalies.
+### Module 8 — Logic and causality
+Detect invalid inference chains, circular reasoning, causal overclaims, temporal leaps, confounding claims, and unsupported transitions.
 
-### Pass 9 — Data and statistics
-Read `references/statistical-checks.md`. Cross-check reported N, variables, coding, scales, exclusions, statistics, and interpretations. Do not recompute or assert a statistical result unless the available data/context supports it.
+### Module 9 — Evidence and claim support
+Read `references/evidence-checks.md`. For material claims, distinguish citation presence from substantive support. Classify support as `SUPPORTED`, `PARTIAL`, `UNSUPPORTED`, `CONTRADICTED`, or `INSUFFICIENT EVIDENCE`.
 
-### Pass 10 — Consistency
-Read `references/consistency-checks.md`. Compare terminology, numbers, population, scope, hypotheses, methods, results, tables, figures, and conclusions across documents/sections.
+### Module 10 — Internal consistency and contradictions
+Read `references/consistency-checks.md`. Compare terminology, numbers, variables, hypotheses, samples, methods, results, tables, figures, scope, and conclusions across chapters/documents.
 
-### Pass 11 — Dependency and impact
-Read `references/dependency-model.md`. Build dependency chains and identify downstream components that depend on changed or questionable nodes.
+### Module 11 — Scope and completeness
+Check whether the thesis claims more than its design/evidence can support, whether required reasoning links are missing, and whether key components are present for the stated research goal. Missing information is not automatically an error.
 
-### Pass 12 — Conclusion alignment
-Trace every major conclusion back to results and research questions. Detect unanswered questions, unused results, unsupported conclusions, and scope inflation.
+### Module 12 — Results / discussion / conclusion alignment
+Trace each major result into discussion and conclusion, and each conclusion back to results and research questions. Detect unanswered RQs, unused results, unsupported conclusions, and scope inflation.
 
-### Pass 13 — Research risks
-Separate confirmed findings from plausible risks requiring more evidence or methodology-specific review.
+### Module 13 — Research dead ends and fragile dependencies
+Read `references/dependency-model.md`. Identify weak or broken nodes that can invalidate downstream analysis, and research questions that appear difficult/impossible to answer with the stated evidence/design.
 
-### Cross-check / deduplication
-Before reporting:
-- merge duplicate findings;
-- prefer the narrowest defensible claim;
-- downgrade findings when a plausible explanation remains;
-- distinguish a contradiction from a difference caused by a documented subsample/exclusion;
-- require stronger evidence for CRITICAL/HIGH labels.
+### Module 14 — Change Impact Analysis baseline
+Always run a baseline dependency scan, even when the user did not specify a change. Identify high-dependency nodes and components that would likely require review if a material research decision changes. If an explicit `OLD → NEW` change exists, run the full downstream impact traversal.
+
+### Module 15 — Supervisor feedback translator
+Search all supplied materials for supervisor/advisor comments or instructions. Translate vague feedback into plausible interpretations and trace likely dependencies. If no feedback is supplied, still show the module and state that no feedback was available for diagnosis.
+
+### Module 16 — Literature Review Auditor
+Read `references/literature-review-checks.md`. Audit synthesis, coverage, gap logic, contribution, competing findings, source relevance/quality, chronology when material, search/selection transparency when supplied, and duplicate/overlapping arguments.
+
+### Module 17 — Reference & Citation Integrity
+Read `references/citation-integrity-checks.md`. Audit citation↔reference linkage, uncited references, missing reference entries, duplicate references, metadata inconsistencies, quotation attribution, citation drift, and claim-source traceability. Never invent bibliographic metadata.
+
+### Module 18 — Plagiarism / Paraphrase Risk
+Read `references/paraphrase-risk-checks.md`. Always check for internal self-overlap and compare external source text when supplied. Use `RISK` / `REVIEW NEEDED` unless evidence supports a stronger conclusion.
+
+### Module 19 — Academic Authenticity / Provenance Risk
+Read `references/authenticity-checks.md`. Audit observable provenance and writing-pattern anomalies, citation anomalies, terminology shifts, revision/provenance gaps, and supplied authorship statements. Never infer AI authorship from style alone.
+
+### Module 20 — Research decisions ledger
+Extract explicit research decisions, assumptions, and methodological choices. Record decision, reason/evidence when supplied, affected components, and open questions. Do not invent rationale.
+
+### Module 21 — Defense risk simulation
+Generate examiner-style questions from actual detected weaknesses, fragile dependencies, unsupported claims, or unresolved methodological choices. Tie every defense risk to evidence from the thesis.
+
+### Module 22 — Prioritized action plan
+Order actions by dependency and severity. Separate confirmed errors from verification tasks, potential concerns, and suggestions.
+
+### Required module status
+
+Every module must produce an explicit result block in FULL THESIS DEBUG:
+
+```text
+MODULE: [module name]
+Status: FOUND | Error Not Found
+Coverage: FULL | PARTIAL | LIMITED
+Key findings: [n or brief statement]
+Evidence: [location/evidence or NONE FOUND]
+Verification needed: [if any]
+```
+
+If the module completes without finding a concrete error in the available evidence, use exactly:
+
+`Status: Error Not Found`
+
+Do not omit the module. Do not use `Error Not Found` to conceal a missing-input limitation; pair it with `Coverage: PARTIAL` or `Coverage: LIMITED` and state what could not be verified.
+
+### Full-audit execution order
+
+Run the modules in this order so downstream reasoning can use upstream findings:
+
+`1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → 22`
+
+Before finalizing, perform a cross-check pass to deduplicate findings, downgrade unsupported severity, verify finding counts, and confirm that every module appears exactly once.
 
 ## Change Impact Analysis — signature workflow
 
@@ -247,17 +327,7 @@ If a field cannot be established, say `NOT AVAILABLE` or `INSUFFICIENT EVIDENCE`
 
 ## Default report
 
-For a full audit, follow `references/output-schema.md` and the template in `templates/debug-report.md`. Default order:
-
-1. Executive Summary
-2. Research Health Score
-3. Critical Errors
-4. High Priority Issues
-5. Medium/Low Issues
-6. Literature Review Audit
-7. Evidence Audit
-8. Reference & Citation Integrity
-9. Plagiarism / Paraphrase Risk
+For a broad thesis audit, always follow `references/output-schema.md` and `templates/debug-report.md`. The report must include the executive summary, health score, finding summary, and a visible status block for **all 22 modules**. Do not collapse modules into one paragraph and do not omit `Error Not Found` modules.
 10. Academic Authenticity Risk
 11. Consistency Audit
 12. Dependency Analysis

@@ -17,3 +17,13 @@ Model-level evaluation must separately measure:
 - authenticity-risk false-positive rate and calibration
 
 A static pass validates packaging only; it does not prove the model is correct or error-free.
+
+
+For the automatic full-audit contract, also validate:
+- broad prompt activation without a module checklist;
+- all 22 module status blocks present;
+- no silent module omission;
+- `Error Not Found` semantics;
+- limited-evidence disclosure;
+- finding-count reconciliation;
+- baseline change-impact scan even without an explicit change.

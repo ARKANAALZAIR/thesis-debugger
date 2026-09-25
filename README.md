@@ -87,6 +87,15 @@ Impact: Conclusion validity and research claims.
 Recommended Action: Reconcile the conclusion with the actual analysis and evidence.
 ```
 
+
+### One-line full audit
+
+Attach the thesis and simply write:
+
+> **audit thesis berikut**
+
+That short request automatically activates **FULL THESIS DEBUG** and runs all supported audit modules. The user does not need to list features or type a long prompt. Every module is shown in the final report. When a module finds no concrete error in the available evidence, its status is explicitly shown as **`Error Not Found`**. Missing evidence is disclosed separately as limited coverage.
+
 ## Installation
 
 ### Claude.ai
@@ -103,8 +112,9 @@ For Skills-compatible runtimes, preserve the standard skill directory structure 
 
 ## Usage
 
-Upload or make available the research artifacts relevant to the audit, then ask naturally:
+Upload or make available the research artifacts relevant to the audit, then ask naturally. A broad request automatically expands into the complete workflow:
 
+- `audit thesis berikut`
 - `Debug my thesis.`
 - `Find only critical errors.`
 - `Check my methodology.`
