@@ -1,0 +1,8 @@
+{
+  "name": "thesis-debugger",
+  "version": "2.2.2",
+  "entrypoint": "SKILL.md",
+  "runtime_validation_claim": false,
+  "distribution": "universal-standalone-agent-skill",
+  "validator": "python scripts/validate.py"
+}

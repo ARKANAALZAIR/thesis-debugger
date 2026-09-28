@@ -4,6 +4,10 @@
 
 Thesis Debugger is a Claude Agent Skill that audits academic research as a connected research system rather than simply reviewing individual chapters. It traces the chain from research questions and literature through theory, hypotheses, variables, methodology, data, analysis, evidence, discussion, and conclusions, with **Change Impact Analysis** as its signature workflow.
 
+### v2.2.2 — Production hardening release
+
+This release locks the canonical output contract, status semantics, reconciliation gates, and runtime render-conformance checks. Runtime validation in a fresh Claude session remains an external verification step; it is not claimed by the package metadata.
+
 ## What it detects
 
 - Research-question/objective mismatch
@@ -318,3 +322,8 @@ python scripts/validate.py
 ```
 
 before release. Static validation checks repository integrity and test coverage; it does not prove that the model will make every research judgment correctly.
+
+
+### v2.2.4
+
+- Reconciled module status classes, external-artifact gates, finding schema, report ordering, and structural validators.

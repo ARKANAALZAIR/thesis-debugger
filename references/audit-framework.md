@@ -112,7 +112,7 @@ If yes and the thesis explains it, do not report an error. If the explanation is
 
 A broad request like “audit thesis berikut” is a FULL THESIS DEBUG request. The system must expand the request internally to all supported modules without requiring the user to specify them.
 
-The audit is incomplete until every module has an explicit status. If no concrete error is found in a module, report `Status: Error Not Found`; if inputs are missing, also report the coverage limitation and verification requirement.
+The audit is incomplete until every module has an explicit status. If no concrete error is found in a materially assessable module, report `Status: Error Not Found`. If a required core input is missing, report `Status: NOT ASSESSABLE` instead; coverage and verification requirements must be explicit.
 
 Before finalizing, validate: (1) all 22 modules appear exactly once, (2) no module is silently skipped, (3) finding counts reconcile with the visible findings, and (4) `Error Not Found` is not used as a substitute for missing evidence.
 

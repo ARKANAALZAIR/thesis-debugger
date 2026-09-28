@@ -1,17 +1,13 @@
 # Changelog
 
-## 2.2.2 — Final Hardening Pass
+## 2.2.2 — Final production hardening
 
-- Added strict `NOT ASSESSABLE` semantics for modules whose core diagnostic inputs are missing.
-- Separated module status from coverage so partial evidence cannot masquerade as a clean audit.
-- Added final audit-integrity and reconciliation rules for 22-module execution, finding IDs, primary ownership, severity, and orphan references.
-- Added root-cause ownership precedence to reduce cross-module double counting.
-- Hardened CRITICAL/HIGH severity calibration against low-confidence escalation and unresolved alternative explanations.
-- Added a fixed, auditable health-score weighting and renormalization formula with dimension-level basis requirements.
-- Added final `Audit Integrity Check` to the report contract and template.
-- Restored/expanded full-audit regression coverage for activation, state semantics, deduplication, severity, and scoring transparency.
+- Enforced exact 21-section broad-audit rendering and M01–M22 module order.
+- Made the canonical finding schema mandatory for every finding severity.
+- Hardened final self-checks against status/class drift, duplicate IDs, orphan references, and score/reconciliation inconsistencies.
 
-2.2.1 — Full-Audit Output Hardening
+## 2.2.1 — Repository baseline
+
 
 - Added a canonical M01–M22 module registry with deterministic names and IDs.
 - Enforced non-short-circuit execution for broad thesis audits.
@@ -35,7 +31,6 @@
 - Added a baseline Change Impact scan even when no explicit `OLD → NEW` change is supplied.
 - Added an auto-trigger benchmark case for the short prompt workflow.
 
-# Changelog
 
 ## 2.1.0 — Research Integrity & Literature Audit Expansion
 

@@ -2,6 +2,8 @@
 
 ## Broad-audit report contract
 
+The 21 section headings and their numbers are canonical. Runtime output must reproduce them exactly; extra numbered sections are contract violations.
+
 When the user provides a thesis/research document and makes a broad audit request such as **“audit thesis berikut”**, generate a **FULL THESIS DEBUG** report automatically.
 
 The report must be auditable for execution completeness, evidence boundaries, finding identity, severity, and score calculation.
@@ -36,9 +38,23 @@ Execution: All supported modules (M01–M22)
 ## 21. Audit Integrity Check
 ```
 
+## Module status semantics
+
+Diagnostic modules (M01–M13, M15–M19) use:
+- `FOUND`
+- `Error Not Found`
+- `NOT ASSESSABLE`
+
+Synthesis/action modules (M14, M20, M21, M22) use:
+- `COMPLETED`
+- `NOT ASSESSABLE`
+- `NOT APPLICABLE`
+
+Coverage is independent: `FULL`, `PARTIAL`, `LIMITED`; use `N/A` when a synthesis/action module is not applicable.
+
 ## Canonical module status matrix
 
-Every full audit must list these modules **exactly once and in order**:
+Every full audit must list these modules **exactly once and in order**. Modules M14, M20, M21, and M22 are synthesis/action modules; all others are diagnostic. Use `N/A` coverage when a synthesis module is not applicable.
 
 | ID | Module |
 |---|---|
@@ -65,11 +81,12 @@ Every full audit must list these modules **exactly once and in order**:
 | M21 | Defense Risk Simulation |
 | M22 | Prioritized Action Plan |
 
-Each module must emit:
+Each diagnostic module must emit:
 
 ```text
 MODULE ID: M01
 MODULE: [canonical name]
+Class: DIAGNOSTIC
 Execution: COMPLETE
 Status: FOUND | Error Not Found | NOT ASSESSABLE
 Coverage: FULL | PARTIAL | LIMITED
@@ -77,6 +94,8 @@ Key findings: [integer count of PRIMARY findings owned by this module]
 Evidence: [locations/evidence or NONE FOUND]
 Verification needed: [text or NONE]
 ```
+
+Each synthesis/action module M14/M20/M21/M22 must emit the same fields with `Class: SYNTHESIS`, status `COMPLETED | NOT ASSESSABLE | NOT APPLICABLE`, and coverage `FULL | PARTIAL | N/A`.
 
 ## Status semantics
 
@@ -87,9 +106,11 @@ Verification needed: [text or NONE]
 - `Coverage: PARTIAL` = core diagnostic can run but one or more sub-checks are blocked.
 - `Coverage: LIMITED` = evidence is too sparse for a reliable core determination; normally pair with `NOT ASSESSABLE`.
 
-Do not use `Error Not Found` as a substitute for missing core evidence.
+Do not use `Error Not Found` as a substitute for missing core evidence. For M15 specifically, absent supervisor feedback/revision notes must produce `NOT ASSESSABLE`, `Coverage: LIMITED`, and an explicit verification requirement.
 
 ## Canonical finding object
+
+Every finding, regardless of severity, must use the complete object below. Rendering a shortened object is a contract violation.
 
 Every detailed finding must contain:
 
@@ -97,10 +118,10 @@ Every detailed finding must contain:
 Finding ID: TD-###
 Primary Module: M##
 Related Modules: [optional]
-Type:
+Type: CONFIRMED ERROR | LIKELY ISSUE | POTENTIAL ISSUE | SUGGESTION | INFO
 Status: CONFIRMED ERROR | LIKELY ISSUE | POTENTIAL ISSUE | SUGGESTION | INFO
 Severity: CRITICAL | HIGH | MEDIUM | LOW | INFO
-Confidence:
+Confidence: HIGH | MODERATE | LOW
 Location:
 Problem:
 Evidence:

@@ -1,6 +1,7 @@
 ---
 name: thesis-debugger
 description: Audit theses, dissertations, research papers, proposals, datasets, research notes, and supervisor feedback as one connected research system. Use this skill for research debugging, literature review auditing, citation/reference integrity, paraphrase or plagiarism-risk review, academic-authenticity risk review, methodology/evidence checks, contradiction tracing, research-change impact analysis, and defense preparation. Prioritize evidence, traceability, low false positives, and change impact. Never claim plagiarism or AI authorship from style alone.
+version: 2.2.4
 ---
 
 # Thesis Debugger
@@ -24,10 +25,11 @@ The defining capability is **change impact analysis**: when a research decision 
 9. **Academic integrity.** Never help fabricate data, significance, results, citations, or evidence.
 10. **Integrity limits.** Treat plagiarism/paraphrase and AI-authorship review as risk assessment unless matching source text or stronger provenance evidence is actually supplied. Never state that a text was definitely AI-written or definitely plagiarized from style alone.
 11. **Simple-prompt full-audit behavior.** When a thesis/research document is supplied and the user asks broadly to “audit”, “debug”, “review”, “check”, or equivalent without naming a narrower module, run the **FULL THESIS DEBUG** workflow automatically. Do not require a long prompt, a slash command, or a module checklist.
-12. **All modules must be shown.** In FULL THESIS DEBUG, every supported diagnostic module executes and every module appears in the final report, even when no issue is found.
-13. **Explicit module-state semantics.** Every full-audit module must end in exactly one of `FOUND`, `Error Not Found`, or `NOT ASSESSABLE`. `Error Not Found` means the core diagnostic was materially assessable and no concrete error was found; `NOT ASSESSABLE` means a required core input is absent.
-14. **Coverage transparency.** Coverage is reported separately as `FULL`, `PARTIAL`, or `LIMITED`. Do not use `Error Not Found` as a substitute for missing core evidence, and never imply the research is globally error-free.
-15. **No prompt burden.** Never tell the user to restate all desired audit modules when the request is a broad thesis audit; the skill itself expands the request into the full workflow.
+12. **All modules must be shown.** In FULL THESIS DEBUG, every supported module executes and every module appears in the final report, even when no issue is found.
+13. **Explicit module-state semantics.** Diagnostic modules use `FOUND`, `Error Not Found`, or `NOT ASSESSABLE`. Synthesis/action modules M14, M20, M21, and M22 use `COMPLETED`, `NOT ASSESSABLE`, or `NOT APPLICABLE`. `Error Not Found` means the diagnostic core was materially assessable and no concrete error was found; `NOT ASSESSABLE` means a required core input is absent.
+14. **Coverage transparency.** Coverage is reported separately as `FULL`, `PARTIAL`, `LIMITED`, or `N/A` where a synthesis module is not applicable. Do not use `Error Not Found` as a substitute for missing core evidence, and never imply the research is globally error-free.
+15. **Domain gate.** If the supplied artifact/request is clearly outside thesis/research auditing, stop at a `DOMAIN GATE` state and report that the artifact is out of scope. Do not manufacture M01–M22 findings for irrelevant input.
+16. **No prompt burden.** Never tell the user to restate all desired audit modules when the request is a broad thesis audit; the skill itself expands the request into the full workflow.
 
 ## Activation and request routing
 
@@ -222,14 +224,25 @@ Use these IDs and names exactly:
 
 ### C. Canonical module result block
 
-Every module must emit exactly one block, in M01→M22 order:
+Every module must emit exactly one block, in M01→M22 order. Use diagnostic statuses for diagnostic modules and synthesis statuses for M14, M20, M21, and M22.
 
 ```text
 MODULE ID: M01
 MODULE: Research structure & RQ/objective alignment
+Class: DIAGNOSTIC
 Execution: COMPLETE
 Status: FOUND | Error Not Found | NOT ASSESSABLE
 Coverage: FULL | PARTIAL | LIMITED
+Key findings: [integer count of PRIMARY findings owned by this module]
+Evidence: [locations/evidence or NONE FOUND]
+Verification needed: [text or NONE]
+
+MODULE ID: M14
+MODULE: Change Impact Analysis baseline
+Class: SYNTHESIS
+Execution: COMPLETE
+Status: COMPLETED | NOT ASSESSABLE | NOT APPLICABLE
+Coverage: FULL | PARTIAL | N/A
 Key findings: [integer count of PRIMARY findings owned by this module]
 Evidence: [locations/evidence or NONE FOUND]
 Verification needed: [text or NONE]
@@ -237,6 +250,7 @@ Verification needed: [text or NONE]
 
 ### D. Exact status decision rule
 
+Diagnostic modules:
 ```text
 Can the module materially answer its core diagnostic question from the supplied evidence?
 ├─ NO → Status: NOT ASSESSABLE
@@ -247,13 +261,39 @@ Can the module materially answer its core diagnostic question from the supplied 
    └─ No concrete error/issue found → Status: Error Not Found
 ```
 
-`PARTIAL` coverage may be used with `FOUND` or `Error Not Found` when the core diagnostic can run but some sub-checks are blocked.
+Synthesis/action modules M14, M20, M21, and M22:
+```text
+Can the synthesis/action function be completed from the audit state?
+├─ NO because a required input is absent → NOT ASSESSABLE + Coverage: LIMITED
+├─ NO because the module has no applicable function for this audit mode → NOT APPLICABLE + Coverage: N/A
+└─ YES → COMPLETED + Coverage: FULL/PARTIAL
+```
+
+`PARTIAL` coverage may be used with `FOUND` or `Error Not Found` for diagnostics, and with `COMPLETED` when a synthesis function runs but some sub-components are blocked.
 
 Important:
 - Suggestions and INFO observations alone do not force `FOUND`.
 - Missing evidence is not a finding.
 - `NOT ASSESSABLE` does not mean “the module is clean”; it means the evidence boundary prevents a determination.
 - `Error Not Found` does not mean the research is globally error-free.
+
+**External-artifact gate:** absence of an external artifact must never be converted into `Error Not Found`. Use `NOT ASSESSABLE` when the artifact is a required core input for the module, with `Coverage: LIMITED` and an explicit verification request.
+
+- M15 Supervisor Feedback Translator → requires supervisor feedback, revision notes, or equivalent supplied artifact.
+- M16 Literature Review Auditor → requires a literature-review corpus/section or equivalent review evidence.
+- M17 Reference & Citation Integrity → requires a reference list/citation-bearing text sufficient for linkage checks.
+- M20 Research Decisions Ledger → requires supplied decision records or an explicit ledger context; otherwise mark the ledger synthesis as `NOT ASSESSABLE` rather than inventing decisions.
+
+For M18/M19, assess only the evidence actually supplied; do not manufacture an external comparison or provenance record.
+
+
+### Runtime render-conformance contract
+
+The broad-audit report must use the exact 21 numbered sections defined in `references/output-schema.md` and `templates/debug-report.md`. Do not renumber, rename, merge, omit, or duplicate sections. Every M01–M22 module block must appear exactly once in M01→M22 order.
+
+Every finding must use the full canonical field sequence from §E even for INFO/LOW findings. Do not collapse fields into prose, and never combine `Provenance` with `Verification Needed`.
+
+Before returning the report, silently verify the 21 section headings, 22 module blocks, legal class/status combinations, unique finding IDs, one Primary Module per finding, valid Related Modules, severity reconciliation, module-finding reconciliation, and health-score auditability. A contract check that cannot be established must not be reported as PASS.
 
 ### E. Canonical finding ownership and reconciliation
 
@@ -437,35 +477,34 @@ For AI/authenticity findings, include:
 
 Do not recommend punitive action from stylistic signals alone.
 
-## Required finding format
+## Canonical finding format
 
-For every CRITICAL/HIGH finding use:
+Every material finding, including CRITICAL/HIGH findings, uses exactly this field sequence:
 
-`ID`
-`Type`
-`Severity`
-`Location`
-`Problem`
-`Evidence`
-`Reasoning`
-`Impact`
-`Recommended Action`
+```text
+Finding ID: TD-###
+Primary Module: M##
+Related Modules: [optional]
+Type: CONFIRMED ERROR | LIKELY ISSUE | POTENTIAL ISSUE | SUGGESTION | INFO
+Status: CONFIRMED ERROR | LIKELY ISSUE | POTENTIAL ISSUE | SUGGESTION | INFO
+Severity: CRITICAL | HIGH | MEDIUM | LOW | INFO
+Confidence: HIGH | MODERATE | LOW
+Location: <page/section/table/figure/file or NOT AVAILABLE>
+Problem: <specific defect, gap, or uncertainty>
+Evidence: <what supports the finding; distinguish supplied vs verified evidence>
+Reasoning: <why the evidence supports the diagnosis without overclaiming>
+Impact: <what may change downstream>
+Recommended Action: <smallest useful corrective action>
+Verification Needed: <text or NONE>
+```
 
-If a field cannot be established, say `NOT AVAILABLE` or `INSUFFICIENT EVIDENCE` rather than guessing.
+If a field cannot be established, say `NOT AVAILABLE` or `INSUFFICIENT EVIDENCE` rather than guessing. `Finding ID` is globally unique and `Primary Module` is mandatory.
 
 ## Default report
 
 For a broad thesis audit, always follow `references/output-schema.md` and `templates/debug-report.md`. The report must include the executive summary, health score, finding summary, the **full 22-module status matrix**, all detailed findings, coverage limits, change-impact baseline, and final debug state.
 
-Before returning the report, the v2.2.2 reconciliation gate in `references/audit-integrity.md` must pass: all M01–M22 appear exactly once, module/severity totals reconcile to unique finding IDs, missing core evidence is classified as `NOT ASSESSABLE`, and health-score bases are auditable.
-10. Academic Authenticity Risk
-11. Consistency Audit
-12. Dependency Analysis
-13. Change Impact (if applicable)
-14. Research Risks
-15. Action Plan
-16. Supervisor Questions
-17. Defense Risks
+Before returning the report, the v2.2.4 reconciliation gate in `references/audit-integrity.md` must pass: all M01–M22 appear exactly once, module class/status semantics are legal, module/severity totals reconcile to unique finding IDs, external-artifact gaps are classified as `NOT ASSESSABLE`, and health-score bases are auditable. The report order is defined only by `references/output-schema.md` and `templates/debug-report.md`; the runtime conformance gate requires exact title/number parity with those canonical files. Do not maintain or invent a second numbered report list.
 
 Do not dump every low-confidence observation into the opening. Lead with the highest-signal findings.
 

@@ -1,16 +1,27 @@
 # Audit Integrity & Reconciliation Rules
 
+## 0. Cross-Debugger Vocabulary Mapping
+
+For cross-debugger aggregation, map equivalent module states as follows: `FOUND` (Thesis/Financial) ≡ `ERROR FOUND` (Decision); `Error Not Found` ≡ `ERROR NOT FOUND`; `NOT ASSESSABLE` ≡ `NOT ASSESSABLE`; `NOT APPLICABLE` ≡ `NOT APPLICABLE`; `COMPLETED` ≡ `COMPLETED`. Domain-gate outputs are not module statuses.
+
+
 ## Purpose
 
 This reference defines the final self-check performed at the end of every FULL THESIS DEBUG run. It is designed to prevent four common failures: mislabeling missing evidence as "Error Not Found", duplicate findings, unsupported severity escalation, and opaque health scores.
 
 ## 1. Module-state semantics
 
-Use exactly one module status:
+Diagnostic modules use exactly one of:
 
 - `FOUND` — at least one concrete error/issue is supported by the evidence available to the module.
 - `Error Not Found` — the module can materially evaluate its diagnostic question with the available evidence and finds no concrete error/issue within that scope.
 - `NOT ASSESSABLE` — a required core input is absent, so the module cannot determine whether an error exists. Absence of evidence is not a negative finding.
+
+Synthesis/action modules M14, M20, M21, and M22 use exactly one of:
+
+- `COMPLETED` — the synthesis/action function was successfully produced from the audited state.
+- `NOT ASSESSABLE` — a required input for the synthesis is absent.
+- `NOT APPLICABLE` — the synthesis has no applicable function for the audit mode.
 
 Coverage is separate from status:
 
@@ -26,6 +37,8 @@ Typical mapping:
 | Core evidence present; no concrete issue found | Error Not Found | FULL/PARTIAL |
 | Core evidence absent; core diagnostic cannot be answered | NOT ASSESSABLE | LIMITED |
 | Core evidence partly present; no concrete issue in tested scope | Error Not Found | PARTIAL |
+| Synthesis/action function completed | COMPLETED | FULL/PARTIAL |
+| Synthesis/action has no applicable function | NOT APPLICABLE | N/A |
 
 Do not use `Error Not Found` merely because the module was called.
 
@@ -103,6 +116,8 @@ Before returning the report, verify:
 ```text
 [ ] M01–M22 present exactly once and in canonical order
 [ ] Every module has Execution: COMPLETE
+[ ] Diagnostic modules use only FOUND / Error Not Found / NOT ASSESSABLE
+[ ] M14/M20/M21/M22 use only COMPLETED / NOT ASSESSABLE / NOT APPLICABLE
 [ ] Every module has Status, Coverage, Key findings, Evidence, Verification needed
 [ ] NOT ASSESSABLE is used when a core diagnostic input is absent
 [ ] Error Not Found is not used as a substitute for missing core evidence

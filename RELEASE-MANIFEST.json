@@ -1,0 +1,8 @@
+{
+  "name": "thesis-debugger",
+  "version": "2.2.2",
+  "distribution": "universal-standalone-agent-skill",
+  "entrypoint": "SKILL.md",
+  "runtime_validation_claim": false,
+  "skill_sha256": "b16fbf35694de06a38654445f3c449c69db0fbad3a38dcbb362510da91a22823"
+}

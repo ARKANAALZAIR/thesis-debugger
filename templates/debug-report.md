@@ -1,5 +1,7 @@
 # THESIS DEBUG REPORT
 
+> Render exactly sections 1–21 in this file. Do not rename, renumber, merge, omit, or duplicate numbered sections.
+
 Audit Mode: FULL THESIS DEBUG
 Trigger: Broad thesis audit request
 Execution: All supported modules (M01–M22)
@@ -46,6 +48,16 @@ Key findings: [n]
 Evidence: [location/evidence or NONE FOUND]
 Verification needed: [text or NONE]
 ```
+
+For M14, M20, M21, and M22 use:
+
+```text
+Class: SYNTHESIS
+Status: COMPLETED | NOT ASSESSABLE | NOT APPLICABLE
+Coverage: FULL | PARTIAL | N/A
+```
+
+For all other modules use `Class: DIAGNOSTIC` and the diagnostic status set.
 
 Repeat the same block for **M02 through M22**, using the canonical module registry in `references/output-schema.md`.
 
@@ -190,13 +202,13 @@ Identify research questions that may not be answerable with the stated design/ev
 
 ## 16. Supervisor Feedback Audit
 
-If no supervisor feedback is supplied:
+If no supervisor feedback, revision note, or equivalent artifact is supplied:
 
-`Status: Error Not Found`  
+`Status: NOT ASSESSABLE`  
 `Coverage: LIMITED`  
 `Verification needed: Supervisor feedback or revision notes required.`
 
-Do not invent supervisor intent.
+Do not invent supervisor intent and do not count missing feedback as evidence that no issue exists.
 
 ## 17. Defense Risks
 
