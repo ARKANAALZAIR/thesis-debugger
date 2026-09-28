@@ -323,7 +323,3 @@ python scripts/validate.py
 
 before release. Static validation checks repository integrity and test coverage; it does not prove that the model will make every research judgment correctly.
 
-
-### v2.2.4
-
-- Reconciled module status classes, external-artifact gates, finding schema, report ordering, and structural validators.

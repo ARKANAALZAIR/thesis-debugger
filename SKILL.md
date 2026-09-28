@@ -1,7 +1,7 @@
 ---
 name: thesis-debugger
 description: Audit theses, dissertations, research papers, proposals, datasets, research notes, and supervisor feedback as one connected research system. Use this skill for research debugging, literature review auditing, citation/reference integrity, paraphrase or plagiarism-risk review, academic-authenticity risk review, methodology/evidence checks, contradiction tracing, research-change impact analysis, and defense preparation. Prioritize evidence, traceability, low false positives, and change impact. Never claim plagiarism or AI authorship from style alone.
-version: 2.2.4
+version: 2.2.2
 ---
 
 # Thesis Debugger
@@ -504,7 +504,7 @@ If a field cannot be established, say `NOT AVAILABLE` or `INSUFFICIENT EVIDENCE`
 
 For a broad thesis audit, always follow `references/output-schema.md` and `templates/debug-report.md`. The report must include the executive summary, health score, finding summary, the **full 22-module status matrix**, all detailed findings, coverage limits, change-impact baseline, and final debug state.
 
-Before returning the report, the v2.2.4 reconciliation gate in `references/audit-integrity.md` must pass: all M01–M22 appear exactly once, module class/status semantics are legal, module/severity totals reconcile to unique finding IDs, external-artifact gaps are classified as `NOT ASSESSABLE`, and health-score bases are auditable. The report order is defined only by `references/output-schema.md` and `templates/debug-report.md`; the runtime conformance gate requires exact title/number parity with those canonical files. Do not maintain or invent a second numbered report list.
+Before returning the report, the v2.2.2 reconciliation gate in `references/audit-integrity.md` must pass: all M01–M22 appear exactly once, module class/status semantics are legal, module/severity totals reconcile to unique finding IDs, external-artifact gaps are classified as `NOT ASSESSABLE`, and health-score bases are auditable. The report order is defined only by `references/output-schema.md` and `templates/debug-report.md`; the runtime conformance gate requires exact title/number parity with those canonical files. Do not maintain or invent a second numbered report list.
 
 Do not dump every low-confidence observation into the opening. Lead with the highest-signal findings.
 

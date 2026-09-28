@@ -9,7 +9,11 @@ for f in ['SKILL.md','README.md','LICENSE','CHANGELOG.md','CONTRIBUTING.md','QUA
 if (ROOT/'VERSION').read_text().strip()!=EXPECTED: errors.append('VERSION mismatch')
 meta=json.loads((ROOT/'manifest.json').read_text())
 if meta.get('version')!=EXPECTED: errors.append('manifest version mismatch')
+rm=json.loads((ROOT/'RELEASE-MANIFEST.json').read_text())
+if rm.get('version')!=EXPECTED: errors.append('release manifest version mismatch')
 sk=(ROOT/'SKILL.md').read_text(encoding='utf-8')
+front=re.search(r'^version:\s*([0-9.]+)$', sk, re.M)
+if not front or front.group(1)!=EXPECTED: errors.append('SKILL version mismatch')
 for q in ['Runtime render-conformance contract','Every module must emit exactly one block','External-artifact gate','Canonical finding ownership','Class: SYNTHESIS','COMPLETED | NOT ASSESSABLE | NOT APPLICABLE']:
     if q not in sk: errors.append('SKILL missing '+q)
 # exact section order in canonical template
@@ -36,6 +40,8 @@ for mid,name in MODULES:
 if 'Audit Integrity Check' not in rep or 'Final reconciliation gate' not in rep: errors.append('template integrity/reconciliation missing')
 if '### v'+EXPECTED not in (ROOT/'README.md').read_text(encoding='utf-8'): errors.append('README current version missing')
 if not (ROOT/'CHANGELOG.md').read_text().startswith('# Changelog\n\n## '+EXPECTED+' '): errors.append('CHANGELOG current release missing')
+for bad in ROOT.rglob('*'):
+ if bad.is_file() and (bad.suffix in {'.pyc', '.pyo'} or '__pycache__' in bad.parts): errors.append(f'build artifact present: {bad.relative_to(ROOT)}')
 if errors:
  print('FAIL'); print('\n'.join(errors)); raise SystemExit(1)
 print('PASS'); print('version',EXPECTED); print('render_contract PASS'); print('module_registry PASS'); print('finding_contract PASS'); print('status_contract PASS'); print('integrity_contract PASS')
