@@ -190,7 +190,7 @@ Expected behavior:
 - deduplicate the underlying issue into one unique Finding ID;
 - assign one Primary Module;
 - optionally list other modules under Related Modules;
-- severity totals and module primary-finding counts must reconcile to the number of unique Finding IDs.
+- severity totals and qualifying primary-finding counts and observation counts must reconcile to the unique ID totals.
 
 ## AUTO-003 — All-module status completeness
 

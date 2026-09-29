@@ -4,10 +4,6 @@
 
 Thesis Debugger is a Claude Agent Skill that audits academic research as a connected research system rather than simply reviewing individual chapters. It traces the chain from research questions and literature through theory, hypotheses, variables, methodology, data, analysis, evidence, discussion, and conclusions, with **Change Impact Analysis** as its signature workflow.
 
-### v2.2.2 — Production hardening release
-
-This release locks the canonical output contract, status semantics, reconciliation gates, and runtime render-conformance checks. Runtime validation in a fresh Claude session remains an external verification step; it is not claimed by the package metadata.
-
 ## What it detects
 
 - Research-question/objective mismatch
@@ -98,7 +94,7 @@ Attach the thesis and simply write:
 
 > **audit thesis berikut**
 
-As of v2.2.2, that short request automatically activates **FULL THESIS DEBUG** and runs all 22 supported audit modules. The user does not need to list features or type a long prompt. Every module is shown in the final report. A module with adequate evidence and no concrete error is **`Error Not Found`**; when required core evidence is absent, the module is **`NOT ASSESSABLE`** rather than being falsely reported as clean. The report also reconciles unique findings, module ownership, severity, and health-score calculations.
+As of v2.2.6, that short request automatically activates **FULL THESIS DEBUG** and runs all 22 supported audit modules. The user does not need to list features or type a long prompt. Every module is shown in the final report. A module with adequate evidence and no concrete error is **`Error Not Found`**; when required core evidence is absent, the module is **`NOT ASSESSABLE`** rather than being falsely reported as clean. The report also reconciles qualifying findings, INFO/SUGGESTION observations, module ownership, severity, and health-score calculations.
 
 ## Installation
 
@@ -322,4 +318,3 @@ python scripts/validate.py
 ```
 
 before release. Static validation checks repository integrity and test coverage; it does not prove that the model will make every research judgment correctly.
-

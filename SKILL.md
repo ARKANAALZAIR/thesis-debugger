@@ -1,7 +1,7 @@
 ---
 name: thesis-debugger
 description: Audit theses, dissertations, research papers, proposals, datasets, research notes, and supervisor feedback as one connected research system. Use this skill for research debugging, literature review auditing, citation/reference integrity, paraphrase or plagiarism-risk review, academic-authenticity risk review, methodology/evidence checks, contradiction tracing, research-change impact analysis, and defense preparation. Prioritize evidence, traceability, low false positives, and change impact. Never claim plagiarism or AI authorship from style alone.
-version: 2.2.2
+version: 2.2.6
 ---
 
 # Thesis Debugger
@@ -26,9 +26,9 @@ The defining capability is **change impact analysis**: when a research decision 
 10. **Integrity limits.** Treat plagiarism/paraphrase and AI-authorship review as risk assessment unless matching source text or stronger provenance evidence is actually supplied. Never state that a text was definitely AI-written or definitely plagiarized from style alone.
 11. **Simple-prompt full-audit behavior.** When a thesis/research document is supplied and the user asks broadly to “audit”, “debug”, “review”, “check”, or equivalent without naming a narrower module, run the **FULL THESIS DEBUG** workflow automatically. Do not require a long prompt, a slash command, or a module checklist.
 12. **All modules must be shown.** In FULL THESIS DEBUG, every supported module executes and every module appears in the final report, even when no issue is found.
-13. **Explicit module-state semantics.** Diagnostic modules use `FOUND`, `Error Not Found`, or `NOT ASSESSABLE`. Synthesis/action modules M14, M20, M21, and M22 use `COMPLETED`, `NOT ASSESSABLE`, or `NOT APPLICABLE`. `Error Not Found` means the diagnostic core was materially assessable and no concrete error was found; `NOT ASSESSABLE` means a required core input is absent.
-14. **Coverage transparency.** Coverage is reported separately as `FULL`, `PARTIAL`, `LIMITED`, or `N/A` where a synthesis module is not applicable. Do not use `Error Not Found` as a substitute for missing core evidence, and never imply the research is globally error-free.
-15. **Domain gate.** If the supplied artifact/request is clearly outside thesis/research auditing, stop at a `DOMAIN GATE` state and report that the artifact is out of scope. Do not manufacture M01–M22 findings for irrelevant input.
+13. **Role-specific module-state semantics.** Diagnostic modules use exactly `FOUND`, `Error Not Found`, or `NOT ASSESSABLE`. Synthesis/action modules use exactly `COMPLETED`, `NOT ASSESSABLE`, or `NOT APPLICABLE`. Do not mix these taxonomies.
+14. **Coverage transparency.** Coverage is reported separately as `FULL`, `PARTIAL`, or `LIMITED`. Do not use `Error Not Found` as a substitute for missing core evidence, and never imply the research is globally error-free.
+15. **Reference loading is mandatory.** Before executing any module or formula, read every bundled reference explicitly cited by the selected workflow, including the canonical output and audit-integrity contracts. If a required reference cannot be loaded, do not silently approximate or invent its rule.
 16. **No prompt burden.** Never tell the user to restate all desired audit modules when the request is a broad thesis audit; the skill itself expands the request into the full workflow.
 
 ## Activation and request routing
@@ -121,6 +121,8 @@ Map research questions, objectives, scope, contribution, chapter structure, and 
 ### Module 2 — Theory / hypothesis / model alignment
 Check theory → construct → hypothesis/model → test alignment. Flag unsupported theory-to-hypothesis jumps, model mismatches, and unused constructs.
 
+**Evidence boundary rule:** A material theory/literature/model section is core evidence for M02. If that core evidence is not present in the supplied material, M02 **MUST** be `NOT ASSESSABLE`; do not promote a suspected theory gap to a qualifying finding merely because H1 appears under-justified. You may record a verification observation (for example, “theory basis not visible in supplied material”) with `Verification needed`, but that observation cannot make M02 `FOUND`.
+
 ### Module 3 — Methodology / research-question fit
 Test whether the stated research design, population, sampling, data collection, and analysis can answer each research question. Do not impose universal methods.
 
@@ -181,7 +183,7 @@ Generate examiner-style questions from actual detected weaknesses, fragile depen
 ### Module 22 — Prioritized action plan
 Order actions by dependency and severity. Separate confirmed errors from verification tasks, potential concerns, and suggestions.
 
-## Production hardening — v2.2.2 canonical execution contract
+## Production hardening — v2.2.6 canonical execution contract
 
 The following rules are mandatory for every **FULL THESIS DEBUG** run. They harden execution completeness, module-state semantics, deduplication, severity calibration, health-score transparency, and final reconciliation.
 
@@ -195,62 +197,69 @@ The following rules are mandatory for every **FULL THESIS DEBUG** run. They hard
 
 ### B. Canonical 22-module registry
 
-Use these IDs and names exactly:
+Use these IDs, names, and classes exactly:
 
-| ID | Canonical module name |
-|---|---|
-| M01 | Research structure & RQ/objective alignment |
-| M02 | Theory / hypothesis / model alignment |
-| M03 | Methodology / research-question fit |
-| M04 | Variable and definition drift |
-| M05 | Measurement & operationalization |
-| M06 | Sample / dataset / numeric consistency |
-| M07 | Statistical interpretation |
-| M08 | Logic / causality |
-| M09 | Evidence / claim support |
-| M10 | Internal consistency / contradictions |
-| M11 | Scope / completeness |
-| M12 | Results / discussion / conclusion alignment |
-| M13 | Research dead ends / fragile dependencies |
-| M14 | Change Impact Analysis baseline |
-| M15 | Supervisor feedback translator |
-| M16 | Literature Review Auditor |
-| M17 | Reference & Citation Integrity |
-| M18 | Plagiarism / Paraphrase Risk |
-| M19 | Academic Authenticity / Provenance Risk |
-| M20 | Research Decisions Ledger |
-| M21 | Defense Risk Simulation |
-| M22 | Prioritized Action Plan |
+| ID | Class | Canonical module name |
+|---|---|---|
+| M01 | DIAG | Research structure & RQ/objective alignment |
+| M02 | DIAG | Theory / hypothesis / model alignment |
+| M03 | DIAG | Methodology / research-question fit |
+| M04 | DIAG | Variable and definition drift |
+| M05 | DIAG | Measurement & operationalization |
+| M06 | DIAG | Sample / dataset / numeric consistency |
+| M07 | DIAG | Statistical interpretation |
+| M08 | DIAG | Logic / causality |
+| M09 | DIAG | Evidence / claim support |
+| M10 | DIAG | Internal consistency / contradictions |
+| M11 | DIAG | Scope / completeness |
+| M12 | DIAG | Results / discussion / conclusion alignment |
+| M13 | DIAG | Research dead ends / fragile dependencies |
+| M14 | SYN | Change Impact Analysis baseline |
+| M15 | SYN | Supervisor feedback translator |
+| M16 | DIAG | Literature Review Auditor |
+| M17 | DIAG | Reference & Citation Integrity |
+| M18 | DIAG | Plagiarism / Paraphrase Risk |
+| M19 | DIAG | Academic Authenticity / Provenance Risk |
+| M20 | SYN | Research Decisions Ledger |
+| M21 | SYN | Defense Risk Simulation |
+| M22 | SYN | Prioritized Action Plan |
 
-### C. Canonical module result block
+### C. Canonical module registry classes
 
-Every module must emit exactly one block, in M01→M22 order. Use diagnostic statuses for diagnostic modules and synthesis statuses for M14, M20, M21, and M22.
+| Class | Modules | Status taxonomy |
+|---|---|---|
+| DIAG | M01–M13, M16–M19 | `FOUND` / `Error Not Found` / `NOT ASSESSABLE` |
+| SYN | M14–M15, M20–M22 | `COMPLETED` / `NOT ASSESSABLE` / `NOT APPLICABLE` |
+
+Synthesis/action modules may reference diagnostic findings but must not relabel completion as `FOUND` or `Error Not Found`.
+
+### D. Canonical module result block
+
+Every module must emit exactly one block, in M01→M22 order:
 
 ```text
 MODULE ID: M01
 MODULE: Research structure & RQ/objective alignment
-Class: DIAGNOSTIC
+Class: DIAG
 Execution: COMPLETE
 Status: FOUND | Error Not Found | NOT ASSESSABLE
 Coverage: FULL | PARTIAL | LIMITED
-Key findings: [integer count of PRIMARY findings owned by this module]
-Evidence: [locations/evidence or NONE FOUND]
-Verification needed: [text or NONE]
-
-MODULE ID: M14
-MODULE: Change Impact Analysis baseline
-Class: SYNTHESIS
-Execution: COMPLETE
-Status: COMPLETED | NOT ASSESSABLE | NOT APPLICABLE
-Coverage: FULL | PARTIAL | N/A
-Key findings: [integer count of PRIMARY findings owned by this module]
+Key findings: [integer count of qualifying PRIMARY findings owned by this module]
+Observations: [integer count of non-qualifying INFO/SUGGESTION PRIMARY observations]
 Evidence: [locations/evidence or NONE FOUND]
 Verification needed: [text or NONE]
 ```
 
-### D. Exact status decision rule
+For synthesis/action modules, replace `Status:` with the role-appropriate taxonomy:
 
-Diagnostic modules:
+```text
+Class: SYN
+Status: COMPLETED | NOT ASSESSABLE | NOT APPLICABLE
+```
+
+### E. Exact status decision rule
+
+For DIAG modules:
 ```text
 Can the module materially answer its core diagnostic question from the supplied evidence?
 ├─ NO → Status: NOT ASSESSABLE
@@ -261,15 +270,15 @@ Can the module materially answer its core diagnostic question from the supplied 
    └─ No concrete error/issue found → Status: Error Not Found
 ```
 
-Synthesis/action modules M14, M20, M21, and M22:
+For SYN modules:
 ```text
-Can the synthesis/action function be completed from the audit state?
-├─ NO because a required input is absent → NOT ASSESSABLE + Coverage: LIMITED
-├─ NO because the module has no applicable function for this audit mode → NOT APPLICABLE + Coverage: N/A
-└─ YES → COMPLETED + Coverage: FULL/PARTIAL
+Can the synthesis/control task be completed from available evidence?
+├─ NO, missing core input → Status: NOT ASSESSABLE
+├─ Task does not materially apply → Status: NOT APPLICABLE
+└─ Otherwise → Status: COMPLETED
 ```
 
-`PARTIAL` coverage may be used with `FOUND` or `Error Not Found` for diagnostics, and with `COMPLETED` when a synthesis function runs but some sub-components are blocked.
+`PARTIAL` coverage may be used with `FOUND`, `Error Not Found`, or `COMPLETED` when the core task runs but some sub-checks are blocked.
 
 Important:
 - Suggestions and INFO observations alone do not force `FOUND`.
@@ -277,25 +286,7 @@ Important:
 - `NOT ASSESSABLE` does not mean “the module is clean”; it means the evidence boundary prevents a determination.
 - `Error Not Found` does not mean the research is globally error-free.
 
-**External-artifact gate:** absence of an external artifact must never be converted into `Error Not Found`. Use `NOT ASSESSABLE` when the artifact is a required core input for the module, with `Coverage: LIMITED` and an explicit verification request.
-
-- M15 Supervisor Feedback Translator → requires supervisor feedback, revision notes, or equivalent supplied artifact.
-- M16 Literature Review Auditor → requires a literature-review corpus/section or equivalent review evidence.
-- M17 Reference & Citation Integrity → requires a reference list/citation-bearing text sufficient for linkage checks.
-- M20 Research Decisions Ledger → requires supplied decision records or an explicit ledger context; otherwise mark the ledger synthesis as `NOT ASSESSABLE` rather than inventing decisions.
-
-For M18/M19, assess only the evidence actually supplied; do not manufacture an external comparison or provenance record.
-
-
-### Runtime render-conformance contract
-
-The broad-audit report must use the exact 21 numbered sections defined in `references/output-schema.md` and `templates/debug-report.md`. Do not renumber, rename, merge, omit, or duplicate sections. Every M01–M22 module block must appear exactly once in M01→M22 order.
-
-Every finding must use the full canonical field sequence from §E even for INFO/LOW findings. Do not collapse fields into prose, and never combine `Provenance` with `Verification Needed`.
-
-Before returning the report, silently verify the 21 section headings, 22 module blocks, legal class/status combinations, unique finding IDs, one Primary Module per finding, valid Related Modules, severity reconciliation, module-finding reconciliation, and health-score auditability. A contract check that cannot be established must not be reported as PASS.
-
-### E. Canonical finding ownership and reconciliation
+### F. Canonical finding ownership and reconciliation
 
 Every finding in the detailed findings section must have:
 
@@ -317,17 +308,85 @@ Verification Needed:
 ```
 
 Rules:
-1. Finding IDs are globally unique within the report.
-2. Every finding has exactly one Primary Module.
-3. Related modules must reuse the same finding ID and never create another global count.
-4. Global severity totals are computed from the canonical finding objects, not estimated separately.
-5. `Critical + High + Medium + Low + Info = Total unique findings`.
-6. `sum(M01…M22 primary-finding counts) = Total unique findings`.
-7. Deduplicate only when root cause, evidence/location, and corrective action materially match. Different roots/actions remain separate.
-8. When overlap occurs, prefer the root-cause module as Primary Module. See `references/audit-integrity.md`.
-9. Before finalizing, verify there are no orphan finding IDs, phantom module references, or duplicate root causes.
+1. Finding/observation IDs are globally unique within the report.
+2. Every finding/observation has exactly one Primary Module.
+3. Related modules must reuse the same ID and never create another global count.
+4. A diagnostic **finding** is a qualifying Type: `CONFIRMED ERROR`, `LIKELY ISSUE`, or `POTENTIAL ISSUE` with Severity `CRITICAL|HIGH|MEDIUM|LOW`.
+5. `SUGGESTION` and `INFO` are **observations**, not qualifying diagnostic findings. They may be attached to a Primary Module for traceability.
+6. `Key findings` counts qualifying diagnostic Primary Findings only. `Observations` counts Primary INFO/SUGGESTION observations.
+7. Global severity totals are computed from all canonical finding/observation objects.
+8. `sum(M01…M22 Key findings) = number of qualifying diagnostic findings`.
+9. `sum(M01…M22 Observations) = number of INFO/SUGGESTION observations`.
+10. `Critical + High + Medium + Low + Info = Total unique finding/observation IDs`.
+11. Deduplicate only when root cause, evidence/location, and corrective action materially match. Different roots/actions remain separate.
+12. When overlap occurs, prefer the root-cause module as Primary Module. See `references/audit-integrity.md`.
+13. Before finalizing, verify there are no orphan IDs, phantom module references, or duplicate root causes.
 
-### F. Severity calibration
+
+### F.1 Status–finding consistency gate
+
+Reconcile each DIAG module against its **Primary Findings**, not against `Related Modules` references. The gate is evidence-gated and count-derived; the model must not hand-wave a status or count.
+
+```text
+DIAG + FOUND
+→ core diagnostic evidence is materially assessable
+→ owns ≥1 qualifying Primary Finding
+→ each qualifying Primary Finding is CONFIRMED ERROR / LIKELY ISSUE / POTENTIAL ISSUE
+→ each qualifying Primary Finding has CRITICAL/HIGH/MEDIUM/LOW severity
+
+DIAG + Error Not Found
+→ core diagnostic evidence is materially assessable
+→ owns 0 qualifying Primary Findings
+→ may carry non-qualifying INFO/SUGGESTION observations for traceability
+
+DIAG + NOT ASSESSABLE
+→ names the missing or insufficient core evidence
+→ any blocked POTENTIAL/LIKELY issue is treated as a verification observation, not a qualifying finding
+```
+
+**Mandatory evidence-boundary rule:** Absence from the supplied excerpt/package is not evidence that the underlying thesis lacks the component. A diagnostic module may claim a concrete absence only when the supplied artifact is sufficiently complete for that module's core question. Otherwise use `NOT ASSESSABLE`.
+
+**M02 hard gate:** If no theory, literature, conceptual model, or other substantive theoretical basis is present in the supplied material, M02 cannot be `FOUND`; it must be `NOT ASSESSABLE`.
+
+A module mentioned only as a Related Module does not become `FOUND`.
+
+### F.2 Count-derived reconciliation algorithm
+
+Do not manually estimate module counts. After the detailed finding/observation list is finalized, construct an internal ledger from the actual IDs and `Primary Module` fields:
+
+```text
+qualifying_primary[module] = count(
+  object.PrimaryModule == module
+  AND object.Type in {CONFIRMED ERROR, LIKELY ISSUE, POTENTIAL ISSUE}
+  AND object.Severity in {CRITICAL, HIGH, MEDIUM, LOW}
+)
+
+observation_primary[module] = count(
+  object.PrimaryModule == module
+  AND object.Type in {INFO, SUGGESTION}
+)
+```
+
+Then require, for every module:
+
+```text
+reported Key findings == qualifying_primary[module]
+reported Observations == observation_primary[module]
+````
+
+If any count differs, the final integrity gate is `FAIL` and the report must be repaired before return. Never declare reconciliation PASS from manually typed totals.
+
+For DIAG status:
+
+```text
+FOUND              ↔ qualifying_primary[module] >= 1 AND core evidence assessable
+Error Not Found    ↔ qualifying_primary[module] == 0 AND core evidence assessable
+NOT ASSESSABLE     ↔ core evidence not assessable
+```
+
+The same ledger must be used to compute global qualifying-finding and observation totals.
+
+### G. Severity calibration
 
 Severity must reflect both impact and evidence strength.
 
@@ -337,17 +396,17 @@ Severity must reflect both impact and evidence strength.
 - Run an alternative-explanation check before CRITICAL/HIGH classification.
 - Preferences, generic advice, and style concerns are not automatically errors.
 
-### G. Health-score integrity
+### H. Health-score integrity
 
 Auditability rule: every score is traceable to evidence; no score is inferred from finding counts.
 
 Use the fixed diagnostic weights and formula in `references/audit-integrity.md` when an overall score is reported. Every scored dimension must include a basis. `N/A` is required for dimensions that are not materially assessable; missing evidence must never be silently converted to zero. If fewer than four core dimensions are assessable, prefer `Overall: N/A`.
 
-### H. Change Impact baseline
+### I. Change Impact baseline
 
 M14 runs even when no explicit change is supplied. Report the highest-sensitivity nodes and downstream review implications, but do not invent an `OLD → NEW` change. Use `Baseline only — no explicit change supplied.` when appropriate.
 
-### I. Final reconciliation gate
+### J. Final reconciliation gate
 
 Final Audit Integrity Check must be explicitly rendered as `Audit Integrity Check` in the report.
 
@@ -356,18 +415,29 @@ Before final output, repair any inconsistency until all of these are true:
 ```text
 [ ] FULL THESIS DEBUG triggered from broad request
 [ ] M01–M22 executed and displayed exactly once
+[ ] Every module has the correct Class and role-specific Status taxonomy
 [ ] Every module has Execution: COMPLETE
-[ ] Every module has Status + Coverage + Key findings + Evidence + Verification
+[ ] Every module has Status + Coverage + Key findings + Observations + Evidence + Verification
 [ ] NOT ASSESSABLE is used for missing core evidence
 [ ] Error Not Found is not used as a substitute for missing core evidence
+[ ] Synthesis/action modules use COMPLETED / NOT ASSESSABLE / NOT APPLICABLE
 [ ] Every finding has one unique ID and one Primary Module
 [ ] Related-module references are valid
+[ ] Every DIAG `FOUND` module owns at least one qualifying Primary Finding
+[ ] Every DIAG `FOUND` module has materially assessable core evidence
+[ ] M02 is `NOT ASSESSABLE` whenever theory/literature/model core evidence is absent from the supplied material
+[ ] No DIAG `FOUND` module is supported only by `SUGGESTION` or `INFO`
+[ ] Any DIAG `POTENTIAL ISSUE` blocked by missing core evidence leaves the module `NOT ASSESSABLE`
+[ ] Any DIAG `Error Not Found` module owns zero qualifying Primary Findings; INFO/SUGGESTION observations may remain
 [ ] No duplicate underlying root cause is counted twice
-[ ] Severity totals reconcile to unique finding count
-[ ] Module primary-finding totals reconcile to unique finding count
+[ ] Severity totals reconcile to unique finding/observation IDs
+[ ] Module primary-finding totals are derived from actual Primary Module + Type + Severity fields
+[ ] Every module `Key findings` count exactly matches the derived qualifying-primary ledger
+[ ] Every module `Observations` count exactly matches the derived observation-primary ledger
 [ ] CRITICAL/HIGH classifications pass confidence/evidence calibration
 [ ] Every health-score dimension has a basis or N/A
-[ ] Overall score formula is auditable or N/A
+[ ] Canonical health-score reference was loaded before calculating any score
+[ ] Overall score uses the fixed weighted renormalized formula or is N/A
 [ ] Change Impact baseline is present
 [ ] Final debug state is present
 ```
@@ -477,34 +547,27 @@ For AI/authenticity findings, include:
 
 Do not recommend punitive action from stylistic signals alone.
 
-## Canonical finding format
+## Required finding format
 
-Every material finding, including CRITICAL/HIGH findings, uses exactly this field sequence:
+For every CRITICAL/HIGH finding use:
 
-```text
-Finding ID: TD-###
-Primary Module: M##
-Related Modules: [optional]
-Type: CONFIRMED ERROR | LIKELY ISSUE | POTENTIAL ISSUE | SUGGESTION | INFO
-Status: CONFIRMED ERROR | LIKELY ISSUE | POTENTIAL ISSUE | SUGGESTION | INFO
-Severity: CRITICAL | HIGH | MEDIUM | LOW | INFO
-Confidence: HIGH | MODERATE | LOW
-Location: <page/section/table/figure/file or NOT AVAILABLE>
-Problem: <specific defect, gap, or uncertainty>
-Evidence: <what supports the finding; distinguish supplied vs verified evidence>
-Reasoning: <why the evidence supports the diagnosis without overclaiming>
-Impact: <what may change downstream>
-Recommended Action: <smallest useful corrective action>
-Verification Needed: <text or NONE>
-```
+`ID`
+`Type`
+`Severity`
+`Location`
+`Problem`
+`Evidence`
+`Reasoning`
+`Impact`
+`Recommended Action`
 
-If a field cannot be established, say `NOT AVAILABLE` or `INSUFFICIENT EVIDENCE` rather than guessing. `Finding ID` is globally unique and `Primary Module` is mandatory.
+If a field cannot be established, say `NOT AVAILABLE` or `INSUFFICIENT EVIDENCE` rather than guessing.
 
 ## Default report
 
 For a broad thesis audit, always follow `references/output-schema.md` and `templates/debug-report.md`. The report must include the executive summary, health score, finding summary, the **full 22-module status matrix**, all detailed findings, coverage limits, change-impact baseline, and final debug state.
 
-Before returning the report, the v2.2.2 reconciliation gate in `references/audit-integrity.md` must pass: all M01–M22 appear exactly once, module class/status semantics are legal, module/severity totals reconcile to unique finding IDs, external-artifact gaps are classified as `NOT ASSESSABLE`, and health-score bases are auditable. The report order is defined only by `references/output-schema.md` and `templates/debug-report.md`; the runtime conformance gate requires exact title/number parity with those canonical files. Do not maintain or invent a second numbered report list.
+Before returning the report, the v2.2.6 reconciliation gate in `references/audit-integrity.md` must pass: all M01–M22 appear exactly once, module/severity totals reconcile to unique finding IDs, missing core evidence is classified as `NOT ASSESSABLE`, and health-score bases are auditable.
 
 Do not dump every low-confidence observation into the opening. Lead with the highest-signal findings.
 

@@ -29,13 +29,27 @@ For the automatic full-audit contract, also validate:
 - baseline change-impact scan even without an explicit change.
 
 
-## v2.2.2 Final Hardening Gates
+## v2.2.6 Runtime Contract & Scoring Gates
 
-- Full-audit status semantics distinguish `FOUND`, `Error Not Found`, and `NOT ASSESSABLE`.
+- Full-audit status semantics distinguish diagnostic (`FOUND`, `Error Not Found`, `NOT ASSESSABLE`) from synthesis/action (`COMPLETED`, `NOT ASSESSABLE`, `NOT APPLICABLE`).
 - Core missing evidence is never labeled as `Error Not Found`.
 - All M01–M22 execute and appear exactly once.
-- Unique finding IDs, Primary Modules, severity totals, and module totals reconcile.
+- Unique finding/observation IDs, Primary Modules, severity totals, qualifying finding totals, and observation totals reconcile.
 - CRITICAL/HIGH findings pass evidence-strength and alternative-explanation checks.
-- Health-score dimensions have documented bases; fixed weights and renormalization are used; insufficient evidence is N/A, not zero.
+- Health-score dimensions have documented bases; the canonical audit-integrity reference is loaded before scoring; fixed weights and renormalization are used; insufficient evidence is N/A, not zero.
 - Final `Audit Integrity Check` passes.
 - `scripts/validate.py` passes.
+
+
+### v2.2.6 status–finding integrity gate
+- A diagnostic `FOUND` status requires a qualifying Primary Finding owned by that module.
+- `SUGGESTION`/`INFO` alone cannot force `FOUND`.
+- A blocked `POTENTIAL ISSUE` leaves the module `NOT ASSESSABLE`.
+- `Error Not Found` requires zero qualifying Primary Findings; INFO/SUGGESTION observations may remain.
+
+
+### v2.2.6 evidence-boundary + count-derived reconciliation gates
+- M02 must be NOT ASSESSABLE when substantive theory/literature/model core evidence is absent from the supplied material.
+- A module's Key findings and Observations counts must be derived from actual detailed Primary Module + Type + Severity fields, never manually estimated.
+- A mismatch between reported and derived module counts is a hard integrity failure.
+- INFO/SUGGESTION observations do not contribute to qualifying finding counts.

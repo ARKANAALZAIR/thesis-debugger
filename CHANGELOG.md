@@ -1,13 +1,42 @@
+## v2.2.6 — Evidence-Gated Status & Count-Derived Reconciliation
+- Added an explicit M02 core-evidence gate: missing theory/literature/model evidence forces `NOT ASSESSABLE`; suspected gaps become verification observations only.
+- Added a general evidence-boundary rule distinguishing missing supplied material from proven absence in the underlying thesis.
+- Added a mandatory count-derived reconciliation algorithm for `Key findings` and `Observations`.
+- Added hard failure behavior for any module-count mismatch.
+- Added regression fixtures for M02 evidence gating and multi-finding module count mismatches.
+- Updated release metadata and QA gates to v2.2.6.
+
+## v2.2.5 — Finding/Observation Reconciliation Cleanup
+- Separated qualifying diagnostic findings from non-qualifying INFO/SUGGESTION observations in the module contract.
+- Added an explicit `Observations` count to every module status block.
+- `Error Not Found` now means zero qualifying diagnostic findings, while INFO/SUGGESTION observations may remain for traceability.
+- Updated reconciliation invariants so qualifying findings and observations reconcile separately to unique IDs.
+- Removed duplicate production-contract section labels and orphaned legacy report-outline content.
+- Expanded regression coverage for observation handling and reconciliation semantics.
+
 # Changelog
 
-## 2.2.2 — Final production hardening
+## v2.2.4 — Status–Finding Integrity Hardening
+- Added mandatory diagnostic status–finding consistency gate.
+- `FOUND` now requires a qualifying Primary Finding owned by the module.
+- `SUGGESTION` and `INFO` alone can never produce `FOUND`.
+- Blocked `POTENTIAL ISSUE` cases must remain `NOT ASSESSABLE` when core evidence is insufficient.
+- `Error Not Found` now explicitly requires zero Primary Findings.
+- Added four regression cases covering status–finding mismatch and related-module ownership.
 
-- Enforced exact 21-section broad-audit rendering and M01–M22 module order.
-- Made the canonical finding schema mandatory for every finding severity.
-- Hardened final self-checks against status/class drift, duplicate IDs, orphan references, and score/reconciliation inconsistencies.
 
-## 2.2.1 — Repository baseline
+## 2.2.2 — Final Hardening Pass
 
+- Added strict `NOT ASSESSABLE` semantics for modules whose core diagnostic inputs are missing.
+- Separated module status from coverage so partial evidence cannot masquerade as a clean audit.
+- Added final audit-integrity and reconciliation rules for 22-module execution, finding IDs, primary ownership, severity, and orphan references.
+- Added root-cause ownership precedence to reduce cross-module double counting.
+- Hardened CRITICAL/HIGH severity calibration against low-confidence escalation and unresolved alternative explanations.
+- Added a fixed, auditable health-score weighting and renormalization formula with dimension-level basis requirements.
+- Added final `Audit Integrity Check` to the report contract and template.
+- Restored/expanded full-audit regression coverage for activation, state semantics, deduplication, severity, and scoring transparency.
+
+2.2.1 — Full-Audit Output Hardening
 
 - Added a canonical M01–M22 module registry with deterministic names and IDs.
 - Enforced non-short-circuit execution for broad thesis audits.
@@ -31,6 +60,7 @@
 - Added a baseline Change Impact scan even when no explicit `OLD → NEW` change is supplied.
 - Added an auto-trigger benchmark case for the short prompt workflow.
 
+# Changelog
 
 ## 2.1.0 — Research Integrity & Literature Audit Expansion
 

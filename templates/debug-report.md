@@ -1,7 +1,5 @@
 # THESIS DEBUG REPORT
 
-> Render exactly sections 1–21 in this file. Do not rename, renumber, merge, omit, or duplicate numbered sections.
-
 Audit Mode: FULL THESIS DEBUG
 Trigger: Broad thesis audit request
 Execution: All supported modules (M01–M22)
@@ -42,24 +40,16 @@ Every row below is mandatory and must appear exactly once.
 MODULE ID: M01
 MODULE: Research structure & RQ/objective alignment
 Execution: COMPLETE
-Status: FOUND | Error Not Found | NOT ASSESSABLE
+Class: DIAG | SYN
+Status: [role-specific taxonomy]
 Coverage: FULL | PARTIAL | LIMITED
-Key findings: [n]
+Key findings: [n qualifying diagnostic findings]
+Observations: [n INFO/SUGGESTION observations]
 Evidence: [location/evidence or NONE FOUND]
 Verification needed: [text or NONE]
 ```
 
-For M14, M20, M21, and M22 use:
-
-```text
-Class: SYNTHESIS
-Status: COMPLETED | NOT ASSESSABLE | NOT APPLICABLE
-Coverage: FULL | PARTIAL | N/A
-```
-
-For all other modules use `Class: DIAGNOSTIC` and the diagnostic status set.
-
-Repeat the same block for **M02 through M22**, using the canonical module registry in `references/output-schema.md`.
+Repeat the same block for **M02 through M22**, using the canonical module registry and class-specific status taxonomy in `references/output-schema.md`.
 
 The final report must literally contain these 22 module blocks (one each, in this order):
 
@@ -202,13 +192,14 @@ Identify research questions that may not be answerable with the stated design/ev
 
 ## 16. Supervisor Feedback Audit
 
-If no supervisor feedback, revision note, or equivalent artifact is supplied:
+If no supervisor feedback is supplied:
 
+`Class: SYN`  
 `Status: NOT ASSESSABLE`  
 `Coverage: LIMITED`  
 `Verification needed: Supervisor feedback or revision notes required.`
 
-Do not invent supervisor intent and do not count missing feedback as evidence that no issue exists.
+Do not invent supervisor intent.
 
 ## 17. Defense Risks
 
@@ -235,9 +226,11 @@ Use exactly one:
 ```text
 Audit Integrity Check
 Modules Executed: 22/22
-Modules Found: [n]
-Modules Error Not Found: [n]
+Diagnostic Modules Found: [n]
+Diagnostic Modules Error Not Found: [n]
 Modules Not Assessable: [n]
+Synthesis/Action Modules Completed: [n]
+Modules Not Applicable: [n]
 Unique Findings: [n]
 Severity Reconciliation: PASS
 Module Finding Reconciliation: PASS
@@ -251,17 +244,22 @@ Health Score Auditability: PASS | N/A
 
 ```text
 [ ] M01–M22 all executed and shown exactly once
-[ ] Every module has Status + Coverage + Key findings + Evidence + Verification
+[ ] Every module has Class + role-appropriate Status + Coverage + Key findings + Observations + Evidence + Verification
 [ ] NOT ASSESSABLE is used when a core diagnostic input is absent
 [ ] Error Not Found is not used as a substitute for missing core evidence
+[ ] Every DIAG `FOUND` module owns at least one qualifying Primary Finding
+[ ] DIAG `FOUND` is never supported only by SUGGESTION/INFO
+[ ] DIAG `Error Not Found` modules own zero qualifying Primary Findings; INFO/SUGGESTION observations may remain
+[ ] POTENTIAL issues blocked by missing core evidence leave the DIAG module NOT ASSESSABLE
 [ ] Every finding has one unique ID and one Primary Module
 [ ] Related-module references resolve to existing findings
 [ ] Duplicate root causes are not counted twice
 [ ] Severity totals reconcile to unique findings
-[ ] Module primary-finding totals reconcile to unique findings
+[ ] Key-finding totals + observation totals reconcile to unique IDs
 [ ] CRITICAL/HIGH findings pass confidence/evidence calibration
 [ ] Every score has a basis or N/A
-[ ] Overall score formula is auditable or N/A
+[ ] Canonical health-score reference was loaded
+[ ] Overall score uses the fixed weighted renormalized formula or is N/A
 [ ] Change Impact baseline is present
 [ ] Final Debug State is present
 [ ] Audit Integrity Check is present and internally consistent

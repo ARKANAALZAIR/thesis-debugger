@@ -2,8 +2,6 @@
 
 ## Broad-audit report contract
 
-The 21 section headings and their numbers are canonical. Runtime output must reproduce them exactly; extra numbered sections are contract violations.
-
 When the user provides a thesis/research document and makes a broad audit request such as **“audit thesis berikut”**, generate a **FULL THESIS DEBUG** report automatically.
 
 The report must be auditable for execution completeness, evidence boundaries, finding identity, severity, and score calculation.
@@ -38,23 +36,14 @@ Execution: All supported modules (M01–M22)
 ## 21. Audit Integrity Check
 ```
 
-## Module status semantics
-
-Diagnostic modules (M01–M13, M15–M19) use:
-- `FOUND`
-- `Error Not Found`
-- `NOT ASSESSABLE`
-
-Synthesis/action modules (M14, M20, M21, M22) use:
-- `COMPLETED`
-- `NOT ASSESSABLE`
-- `NOT APPLICABLE`
-
-Coverage is independent: `FULL`, `PARTIAL`, `LIMITED`; use `N/A` when a synthesis/action module is not applicable.
-
 ## Canonical module status matrix
 
-Every full audit must list these modules **exactly once and in order**. Modules M14, M20, M21, and M22 are synthesis/action modules; all others are diagnostic. Use `N/A` coverage when a synthesis module is not applicable.
+Class semantics:
+- DIAG modules: M01–M13, M16–M19 → `FOUND` / `Error Not Found` / `NOT ASSESSABLE`.
+- SYN modules: M14–M15, M20–M22 → `COMPLETED` / `NOT ASSESSABLE` / `NOT APPLICABLE`.
+Never use `FOUND` or `Error Not Found` as a proxy for successful synthesis/control completion.
+
+Every full audit must list these modules **exactly once and in order**:
 
 | ID | Module |
 |---|---|
@@ -81,21 +70,19 @@ Every full audit must list these modules **exactly once and in order**. Modules 
 | M21 | Defense Risk Simulation |
 | M22 | Prioritized Action Plan |
 
-Each diagnostic module must emit:
+Each module must emit:
 
 ```text
 MODULE ID: M01
 MODULE: [canonical name]
-Class: DIAGNOSTIC
 Execution: COMPLETE
-Status: FOUND | Error Not Found | NOT ASSESSABLE
+Status: FOUND | Error Not Found | NOT ASSESSABLE  # DIAG only
 Coverage: FULL | PARTIAL | LIMITED
-Key findings: [integer count of PRIMARY findings owned by this module]
+Key findings: [integer count of qualifying PRIMARY diagnostic findings owned by this module]
+Observations: [integer count of PRIMARY INFO/SUGGESTION observations owned by this module]
 Evidence: [locations/evidence or NONE FOUND]
 Verification needed: [text or NONE]
 ```
-
-Each synthesis/action module M14/M20/M21/M22 must emit the same fields with `Class: SYNTHESIS`, status `COMPLETED | NOT ASSESSABLE | NOT APPLICABLE`, and coverage `FULL | PARTIAL | N/A`.
 
 ## Status semantics
 
@@ -106,11 +93,9 @@ Each synthesis/action module M14/M20/M21/M22 must emit the same fields with `Cla
 - `Coverage: PARTIAL` = core diagnostic can run but one or more sub-checks are blocked.
 - `Coverage: LIMITED` = evidence is too sparse for a reliable core determination; normally pair with `NOT ASSESSABLE`.
 
-Do not use `Error Not Found` as a substitute for missing core evidence. For M15 specifically, absent supervisor feedback/revision notes must produce `NOT ASSESSABLE`, `Coverage: LIMITED`, and an explicit verification requirement.
+Do not use `Error Not Found` as a substitute for missing core evidence.
 
 ## Canonical finding object
-
-Every finding, regardless of severity, must use the complete object below. Rendering a shortened object is a contract violation.
 
 Every detailed finding must contain:
 
@@ -118,10 +103,10 @@ Every detailed finding must contain:
 Finding ID: TD-###
 Primary Module: M##
 Related Modules: [optional]
-Type: CONFIRMED ERROR | LIKELY ISSUE | POTENTIAL ISSUE | SUGGESTION | INFO
+Type:
 Status: CONFIRMED ERROR | LIKELY ISSUE | POTENTIAL ISSUE | SUGGESTION | INFO
 Severity: CRITICAL | HIGH | MEDIUM | LOW | INFO
-Confidence: HIGH | MODERATE | LOW
+Confidence:
 Location:
 Problem:
 Evidence:
@@ -133,16 +118,31 @@ Verification Needed:
 
 Every finding must have exactly one Primary Module. Related modules reuse the same Finding ID.
 
+## Status–finding consistency
+
+Before reconciliation totals are accepted:
+
+- `FOUND` requires at least one **Primary Finding** owned by that module.
+- A qualifying diagnostic Primary Finding uses Type `CONFIRMED ERROR`, `LIKELY ISSUE`, or `POTENTIAL ISSUE` and Severity `CRITICAL`, `HIGH`, `MEDIUM`, or `LOW`.
+- `SUGGESTION` and `INFO` cannot by themselves make a DIAG module `FOUND`.
+- A blocked `POTENTIAL ISSUE` leaves the DIAG module `NOT ASSESSABLE`.
+- A DIAG module marked `Error Not Found` must own zero **qualifying** Primary Findings; non-qualifying INFO/SUGGESTION observations may remain. Related-module references do not count.
+
 ## Reconciliation invariants
 
 The final report must satisfy:
 
 ```text
-Total unique findings = count(unique Finding ID)
-Total unique findings = Critical + High + Medium + Low + Info
-Total unique findings = sum(primary-finding counts for M01–M22)
+Total unique finding/observation IDs = count(unique IDs)
+Total unique finding/observation IDs = Critical + High + Medium + Low + Info
+Total qualifying diagnostic findings = sum(Key findings for M01–M22)
+Total observations = sum(Observations for M01–M22)
 Every module Finding ID reference resolves to an existing finding
 No underlying root cause is counted twice
+
+**Count-source rule:** module `Key findings` and `Observations` values are derived from the detailed objects' actual `Primary Module`, `Type`, and `Severity` fields. They must never be manually estimated or copied from a narrative summary. If any module count does not equal the derived ledger count, `Module Finding Reconciliation` is `FAIL` until corrected.
+
+**Evidence-boundary rule:** when a module's core diagnostic input is absent from the supplied material, use `NOT ASSESSABLE`. In particular, M02 requires substantive theory/literature/model evidence; a theory gap may be noted for verification, but cannot become a qualifying finding or `FOUND` without that core evidence.
 ```
 
 ## Severity calibration
@@ -153,13 +153,16 @@ Severity is a categorical risk label. It is not a measure of model quality and m
 - HIGH: confirmed or strongly supported likely issue + material downstream impact.
 - MEDIUM: bounded but meaningful concern or well-supported potential issue.
 - LOW: localized traceability/clarity/minor consistency issue.
-- INFO: observation with no required action.
+- SUGGESTION: non-qualifying improvement recommendation.
+- INFO: observation with no required corrective action.
 
 Low-confidence findings must not be promoted to CRITICAL/HIGH solely because a hypothetical impact would be large.
 
 ## Health-score integrity
 
 Use the fixed weights and formula from `references/audit-integrity.md` when an overall score is reported. Only materially assessable dimensions enter the calculation; weights are renormalized. Missing evidence is `N/A`, never zero.
+
+**Reference-loading prerequisite:** Before computing any numeric health score, the runtime must load `references/audit-integrity.md`. If that file is unavailable or not loaded, report `Overall: N/A` and do not substitute an unweighted or approximate score.
 
 Every numeric dimension must include:
 
@@ -186,9 +189,11 @@ Every FULL THESIS DEBUG report must end with:
 ```text
 Audit Integrity Check
 Modules Executed: 22/22
-Modules Found: N
-Modules Error Not Found: N
+Diagnostic Modules Found: N
+Diagnostic Modules Error Not Found: N
 Modules Not Assessable: N
+Synthesis/Action Modules Completed: N
+Modules Not Applicable: N
 Unique Findings: N
 Severity Reconciliation: PASS
 Module Finding Reconciliation: PASS
