@@ -10,6 +10,15 @@ def main():
  if ids!=[f'M{i:02d}' for i in range(1,23)]: errs.append('M01-M22 module order/count failed')
  for fld in ['Finding ID:','Primary Module:','Related Modules:','Location:','Problem:','Evidence:','Reasoning:','Impact:','Recommended Action:','Verification Needed:']:
   if fld not in t: errs.append('missing canonical finding field '+fld)
+ result_section = t.split('### Result Traceability & Reproduction Audit', 1)
+ if len(result_section) != 2: errs.append('missing Result Traceability & Reproduction Audit subsection')
+ else:
+  matrix = result_section[1].split('## 7.', 1)[0]
+  for heading in ['Result/claim ID','Thesis location','Source data/artifact','Script/formula/method',
+                  'Reported result','Reproduced result','Discrepancy','Result status','Limitations','Downstream impact']:
+   if heading not in matrix: errs.append('result traceability matrix missing '+heading)
+  for status in ['REPRODUCED','MISMATCH','NOT REPRODUCIBLE WITH SUPPLIED MATERIALS','NOT ASSESSABLE']:
+   if status not in matrix: errs.append('result traceability matrix missing status '+status)
  if 'Audit Integrity Check' not in t: errs.append('missing integrity block')
  if errs: print('FAIL'); print('\n'.join(errs)); return 1
  print('PASS'); return 0

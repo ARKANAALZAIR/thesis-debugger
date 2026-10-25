@@ -237,3 +237,33 @@ Expected behavior:
 ### AUTO-011 — Audit integrity gate
 **Input:** A draft report references TD-007 in M10 but TD-007 does not exist in Detailed Findings.
 **Expected:** Audit Integrity Check fails; the report must be repaired before being returned.
+
+## Reproducibility & result trace cases
+
+### RT-001 — Result reproduced from supplied data and procedure
+**Input:** A supplied small dataset, inspected deterministic calculation, and thesis table all report the same mean.
+**Expected:** `REPRODUCED`; identify the input and calculation actually used.
+
+### RT-002 — Reported table differs from completed reproduction
+**Input:** The supplied dataset and inspected procedure produce a material value different from the reported table after sample, transformation, rounding, and alternatives are checked.
+**Expected:** `MISMATCH`; create or link one root-cause finding with evidence, location, downstream impact, and verification action.
+
+### RT-003 — Raw data or script missing
+**Input:** The reported result is identifiable, but required raw data or author-supplied script is not present.
+**Expected:** `NOT REPRODUCIBLE WITH SUPPLIED MATERIALS`; name the missing artifact. Do not treat it as a false result or misconduct.
+
+### RT-004 — Dependency unavailable or execution blocked
+**Input:** A required package is unavailable, permission is absent, or inspected code cannot safely be executed.
+**Expected:** `NOT REPRODUCIBLE WITH SUPPLIED MATERIALS`; report `NOT RUN` and the exact blocker. Do not claim the script ran.
+
+### RT-005 — Rounding or documented non-determinism
+**Input:** Values differ only at display precision, or a stochastic procedure yields a value within a documented, justified range.
+**Expected:** `REPRODUCED` when agreement meets the stated precision/tolerance/range; document the harmless variation.
+
+### RT-006 — Reproducible statistic, unsupported interpretation
+**Input:** A supplied statistic is independently recalculated successfully, but the discussion makes an unsupported causal or theoretical inference.
+**Expected:** Result status `REPRODUCED`; separately assess interpretation under statistical/evidence/logic checks.
+
+### RT-007 — Mismatch deduplicated across modules
+**Input:** M06 and M10 detect the same table-to-calculation discrepancy with the same root cause and corrective action.
+**Expected:** One unique finding ID and one Primary Module, with other module detections linked as related. Matrix does not add a duplicate finding.

@@ -1,3 +1,19 @@
+## v2.2.8 — Executable Result Trace Evaluation
+- Replaced the isolated synthetic arithmetic test with an end-to-end supplied-data fixture workflow.
+- Added a hash-pinned, package-owned analysis script executed with a timeout, process resource limits, isolated Python mode, and a temporary fixture copy.
+- Added reported/mismatched result cases with sample size, exclusions, units, procedure, rounding, trace-chain, interpretation-scope, and finding-deduplication checks.
+- Added a captured-report evaluator that compares an actual saved result-matrix row with an independently recomputed fixture result.
+- Missing artifacts, changed code, unavailable dependencies, and unsafe execution remain blocked states, not evidence of a false result or misconduct.
+- Target-runtime certification remains unclaimed until actual runtime captures pass the capture evaluator.
+
+## v2.2.7 — Reproducibility & Result Trace Audit
+- Added a dedicated workflow for tracing material results from supplied inputs through transformations, analysis, outputs, thesis reporting, and downstream claims.
+- Defined result-level statuses separately from the canonical module status taxonomy, with explicit controls against false verification.
+- Added safe, proportional reproduction guidance, comparisons for statistical and table values, rounding, and legitimate non-determinism.
+- Integrated mismatch ownership and deduplication with existing dataset, statistical, evidence, consistency, and conclusion workflows without changing the 22-module registry.
+- Added a Result Traceability & Reproduction Audit matrix to the report schema and template.
+- Added synthetic regression cases for successful reproduction, mismatch, missing inputs, blocked dependencies/execution, rounding/non-determinism, unsupported interpretation, and finding deduplication.
+
 ## v2.2.6 — Evidence-Gated Status & Count-Derived Reconciliation
 - Added an explicit M02 core-evidence gate: missing theory/literature/model evidence forces `NOT ASSESSABLE`; suspected gaps become verification observations only.
 - Added a general evidence-boundary rule distinguishing missing supplied material from proven absence in the underlying thesis.

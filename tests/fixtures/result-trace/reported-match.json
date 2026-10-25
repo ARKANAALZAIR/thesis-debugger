@@ -1,0 +1,10 @@
+{
+  "reported_value": 20.0,
+  "sample_n": 3,
+  "excluded_rows": 1,
+  "unit": "score points",
+  "procedure_id": "arithmetic_mean_included_rows_v1",
+  "tolerance": 0.005,
+  "reported_population_scope": "all eligible households in Indonesia",
+  "downstream_impact": "supports the broad population conclusion"
+}

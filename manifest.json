@@ -1,8 +1,9 @@
 {
   "name": "thesis-debugger",
-  "version": "2.2.2",
+  "version": "2.2.8",
   "entrypoint": "SKILL.md",
   "runtime_validation_claim": false,
   "distribution": "universal-standalone-agent-skill",
-  "validator": "python scripts/validate.py"
+  "validator": "python scripts/validate.py",
+  "capture_evaluator": "python scripts/result_trace_eval.py --capture-report REPORT.md"
 }

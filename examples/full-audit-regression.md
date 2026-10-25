@@ -1,4 +1,4 @@
-# Full-Audit Regression Contract — v2.2.6
+# Full-Audit Regression Contract — v2.2.7
 
 Use a readable thesis and the short prompt:
 
@@ -54,6 +54,22 @@ If `references/audit-integrity.md` is not loaded, the runtime must not emit a nu
 - Otherwise the integrity gate must fail and require repair.
 
 
-## v2.2.6 evidence-boundary regression
+## Evidence-boundary regression
 
 If a theory/literature/model section is absent from the supplied audit material, M02 must be `NOT ASSESSABLE`, not `FOUND` from an inferred theory gap. A module with two qualifying primary findings must report `Key findings: 2`; the final integrity gate must derive and verify that count from the detailed finding objects.
+
+## Reproducibility & Result Trace Audit regression
+
+The result-level statuses `REPRODUCED`, `MISMATCH`, `NOT REPRODUCIBLE WITH SUPPLIED MATERIALS`, and `NOT ASSESSABLE` are not module statuses. The report includes a concise result trace matrix for material results only, and never invents empty rows. A blocked or incomplete reproduction states the specific limitation and is not proof of error or misconduct.
+
+| Case | Supplied evidence and action | Expected result-level behavior |
+|---|---|---|
+| RT-001 | Supplied synthetic dataset and inspected calculation procedure reproduce a reported mean | `REPRODUCED`; record the data and procedure actually used |
+| RT-002 | A completed calculation differs materially from the reported table after sample, transformations, rounding, and alternatives are checked | `MISMATCH`; link one canonical finding with evidence, impact, and verification action |
+| RT-003 | Raw data or analysis script required for the identified result is not supplied | `NOT REPRODUCIBLE WITH SUPPLIED MATERIALS`; name the missing artifact and do not call the result false |
+| RT-004 | Required dependency is unavailable or inspected execution is blocked | `NOT REPRODUCIBLE WITH SUPPLIED MATERIALS`; report `NOT RUN` and the precise blocker |
+| RT-005 | Difference is explained by reported precision or documented stochastic/platform variation | `REPRODUCED` when agreement is within a justified tolerance/range; explain the harmless variation |
+| RT-006 | Statistic is recalculated but its causal or theoretical interpretation exceeds the evidence | Result is `REPRODUCED`; assess unsupported interpretation separately under the existing module/findings contract |
+| RT-007 | One reproduced mismatch is detected by M06 and M10, with materially identical root cause and corrective action | Reuse one finding ID and one Primary Module; other modules are related, not duplicate findings |
+
+If a result cannot be identified or its scope cannot be determined from supplied material, use `NOT ASSESSABLE`, not `NOT REPRODUCIBLE WITH SUPPLIED MATERIALS`. Missing evidence must not become `Error Not Found`.

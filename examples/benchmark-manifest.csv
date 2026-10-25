@@ -49,3 +49,10 @@ AUTO-008,hardening,root-cause deduplication and primary ownership,INFO
 AUTO-009,hardening,health-score weights renormalize over assessable dimensions,INFO
 AUTO-010,hardening,finding counts never become a score,INFO
 AUTO-011,hardening,audit integrity catches orphan finding IDs,INFO
+RT-001,reproducibility,supplied data and procedure reproduce a material result,INFO
+RT-002,reproducibility,reported table differs from completed reproduction,HIGH
+RT-003,reproducibility,missing raw data or script blocks reproduction without proving error,INFO
+RT-004,reproducibility,unavailable dependency or unsafe execution is reported as blocked,INFO
+RT-005,reproducibility,rounding and documented non-determinism are handled proportionally,INFO
+RT-006,reproducibility,reproduced statistic is separated from unsupported interpretation,MEDIUM
+RT-007,reproducibility,same mismatch is deduplicated across module detections,INFO

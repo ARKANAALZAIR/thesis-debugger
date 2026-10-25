@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""v2.2.6 status/finding contract regression tests.
+"""v2.2.7 status/finding contract regression tests.
 
 This is a static contract test: it validates the invariant that diagnostic
 module status cannot claim FOUND without a qualifying primary finding, and

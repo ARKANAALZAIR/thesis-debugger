@@ -43,3 +43,9 @@ Never invent a source to fill a gap.
 ## Novelty/gap claims
 
 Do not call a gap globally novel without adequate literature coverage. Use cautious language such as `NOT ESTABLISHED FROM SUPPLIED EVIDENCE` when the literature set is insufficient.
+
+## Result provenance and interpretation
+
+For material empirical claims, distinguish the provenance/reproduction of a reported result from whether the claim's interpretation is supported. Trace the result through supplied data, transformations, analysis, output, thesis statement, discussion, and conclusion when those artifacts exist. Use the result-level statuses and matrix in `references/reproducibility-checks.md`.
+
+A result may be reproducible while its interpretation remains unsupported or too strong. Conversely, missing inputs or blocked execution mean the result was not verified from supplied materials, not that it is false. Do not treat a reproduction limitation as evidence of misconduct.

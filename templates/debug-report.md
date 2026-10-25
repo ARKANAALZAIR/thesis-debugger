@@ -146,6 +146,15 @@ Verification Needed:
 |---|---|---|---|---|
 | | | | | |
 
+### Result Traceability & Reproduction Audit
+
+Use one row per selected material result. Do not add empty or invented rows. Apply exactly one result-level status: `REPRODUCED`, `MISMATCH`, `NOT REPRODUCIBLE WITH SUPPLIED MATERIALS`, or `NOT ASSESSABLE`. These labels are not module statuses.
+
+| Result/claim ID | Thesis location | Source data/artifact | Script/formula/method | Reported result | Reproduced result | Discrepancy | Result status | Limitations | Downstream impact |
+|---|---|---|---|---|---|---|---|---|---|
+
+If no material result can be selected, state why. If an attempt was blocked, state `NOT RUN` and the exact blocker. Include inputs and procedure actually used for any reproduction claim.
+
 ## 7. Dependency Analysis
 
 Show research chains, broken links, fragile dependencies, and high-sensitivity nodes.

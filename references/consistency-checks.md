@@ -49,3 +49,9 @@ Do not treat synonyms as different variables automatically. Compare operational 
 ## Contradiction protocol
 
 A contradiction requires mutually incompatible statements about the same object under the same scope/time/context. A difference is not necessarily a contradiction.
+
+## Result provenance and reproduction
+
+For material results, use `references/reproducibility-checks.md` to trace supplied inputs, transformations/exclusions, analysis procedure, output artifacts, thesis reporting, and downstream discussion/conclusions. Compare the same analytical sample and procedure before treating a difference as a contradiction. Check rounding and documented non-determinism.
+
+When a completed, supported reproduction shows a material discrepancy, identify the root cause and reconcile it with any existing M06, M07, or M10 finding. Reuse the same finding ID when root cause, evidence, and corrective action match. Do not create a second finding merely to represent the same discrepancy in the traceability matrix.

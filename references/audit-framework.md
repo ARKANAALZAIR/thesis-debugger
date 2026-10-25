@@ -61,6 +61,7 @@ Check whether important claims are supported by the cited evidence and whether c
 ### 5. Data/statistics
 
 Check reported N, variable definitions, coding, exclusions, statistics, and interpretation.
+For material results, trace the supplied input-to-output-to-claim chain and attempt reproduction only when relevant artifacts, tools, permission, and safe execution permit. Follow `references/reproducibility-checks.md`; include its result-level status matrix and reconcile actual mismatches with canonical findings.
 
 ### 6. Consistency
 
@@ -73,6 +74,7 @@ Trace important changes and weak nodes downstream.
 ### 8. Conclusion alignment
 
 Trace conclusions back to results and questions.
+Include downstream impact from any supported result mismatch, while keeping reproducibility status separate from whether the conclusion is substantively justified.
 
 ### 9. Literature review
 

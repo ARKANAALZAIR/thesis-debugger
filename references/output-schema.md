@@ -36,6 +36,15 @@ Execution: All supported modules (M01–M22)
 ## 21. Audit Integrity Check
 ```
 
+### Result Traceability & Reproduction Audit
+
+Within report section 6, add one row for each selected material result. Do not create empty or invented rows. Use exactly one result-level status: `REPRODUCED`, `MISMATCH`, `NOT REPRODUCIBLE WITH SUPPLIED MATERIALS`, or `NOT ASSESSABLE`. These statuses are not module statuses.
+
+| Result/claim ID | Thesis location | Source data/artifact | Script/formula/method | Reported result | Reproduced result | Discrepancy | Result status | Limitations | Downstream impact |
+|---|---|---|---|---|---|---|---|---|---|
+
+State `NOT RUN` and the exact blocker when execution/recalculation did not occur. Identify missing, ambiguous, and inconsistent trace links. A blocked attempt is not evidence that the reported result is wrong. If no material result can be selected, explain why rather than emitting a blank row.
+
 ## Canonical module status matrix
 
 Class semantics:
@@ -143,6 +152,8 @@ No underlying root cause is counted twice
 **Count-source rule:** module `Key findings` and `Observations` values are derived from the detailed objects' actual `Primary Module`, `Type`, and `Severity` fields. They must never be manually estimated or copied from a narrative summary. If any module count does not equal the derived ledger count, `Module Finding Reconciliation` is `FAIL` until corrected.
 
 **Evidence-boundary rule:** when a module's core diagnostic input is absent from the supplied material, use `NOT ASSESSABLE`. In particular, M02 requires substantive theory/literature/model evidence; a theory gap may be noted for verification, but cannot become a qualifying finding or `FOUND` without that core evidence.
+
+**Result-traceability rule:** result-level labels (`REPRODUCED`, `MISMATCH`, `NOT REPRODUCIBLE WITH SUPPLIED MATERIALS`, `NOT ASSESSABLE`) are separate from module statuses. Only an actually completed execution or independent recalculation may support `REPRODUCED` or `MISMATCH`. Missing inputs or blocked execution must state the evidence boundary and must not be represented as a verified result or misconduct.
 ```
 
 ## Severity calibration

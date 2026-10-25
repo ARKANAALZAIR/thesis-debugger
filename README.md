@@ -25,6 +25,7 @@ Thesis Debugger is a Claude Agent Skill that audits academic research as a conne
 - Reference/citation integrity and claim-source traceability
 - Plagiarism/paraphrase risk when comparison text is supplied
 - Academic-authenticity/provenance risk signals (not a definitive AI detector)
+- Result-level traceability and proportional reproduction checks for material reported findings when supplied data, analysis artifacts, dependencies, permissions, and safe execution make them feasible
 
 ## Why it exists
 
@@ -94,7 +95,7 @@ Attach the thesis and simply write:
 
 > **audit thesis berikut**
 
-As of v2.2.6, that short request automatically activates **FULL THESIS DEBUG** and runs all 22 supported audit modules. The user does not need to list features or type a long prompt. Every module is shown in the final report. A module with adequate evidence and no concrete error is **`Error Not Found`**; when required core evidence is absent, the module is **`NOT ASSESSABLE`** rather than being falsely reported as clean. The report also reconciles qualifying findings, INFO/SUGGESTION observations, module ownership, severity, and health-score calculations.
+As of v2.2.8, that short request automatically activates **FULL THESIS DEBUG** and runs all 22 supported audit modules. The user does not need to list features or type a long prompt. Every module is shown in the final report. A module with adequate evidence and no concrete error is **`Error Not Found`**; when required core evidence is absent, the module is **`NOT ASSESSABLE`** rather than being falsely reported as clean. The report also reconciles qualifying findings, INFO/SUGGESTION observations, module ownership, severity, and health-score calculations.
 
 ## Installation
 
@@ -139,6 +140,8 @@ Designed to work with, when the environment can read them:
 - Research proposals
 - PDF, DOCX, TXT, and Markdown documents
 - CSV/XLSX datasets and research tables
+- Analysis scripts, notebooks, formulas, and documented procedures
+- Dependency manifests/lockfiles and intermediate analysis outputs
 - Research notes
 - Questionnaires and instruments
 - Reference lists and citation exports
@@ -149,6 +152,8 @@ Designed to work with, when the environment can read them:
 
 The skill does not require a complete thesis. It reports which analyses are blocked by missing, ambiguous, or unverified inputs rather than silently filling the gaps.
 
+For material reported results, the audit can trace supplied data and transformations through code, formulas, intermediate outputs, thesis tables or statements, and downstream claims. Reproduction is attempted only when the relevant artifacts and tools are available and execution is safe. A blocked attempt names the missing input, dependency, permission, or safety limitation; it is not evidence that a result is false or that misconduct occurred. Result-level statuses remain distinct from the 22 canonical module statuses.
+
 ## Reliability philosophy
 
 Thesis Debugger is optimized for **high-signal research auditing**, not maximum comment volume. A finding should be grounded in available evidence and tied to a material consequence.
@@ -156,6 +161,7 @@ Thesis Debugger is optimized for **high-signal research auditing**, not maximum 
 The system is designed to:
 
 - distinguish observation from inference and recommendation
+- distinguish a result that was actually reproduced from one that was only traceable, blocked, or not assessable
 - distinguish confirmed errors from likely/potential issues
 - avoid treating missing information as an error
 - preserve stable finding IDs across iterative audits
@@ -226,6 +232,7 @@ thesis-debugger/
 │   ├── error-taxonomy.md
 │   ├── methodology-checks.md
 │   ├── evidence-checks.md
+│   ├── reproducibility-checks.md
 │   ├── literature-review-checks.md
 │   ├── citation-integrity-checks.md
 │   ├── paraphrase-risk-checks.md
@@ -234,6 +241,7 @@ thesis-debugger/
 │   ├── consistency-checks.md
 │   ├── dependency-model.md
 │   ├── severity-rubric.md
+│   ├── audit-integrity.md
 │   └── output-schema.md
 ├── templates/
 │   ├── debug-report.md
@@ -246,7 +254,18 @@ thesis-debugger/
 │   ├── benchmark.md
 │   └── benchmark-manifest.csv
 ├── scripts/
-│   └── validate.py
+│   ├── validate.py
+│   ├── validate_report.py
+│   ├── spec_hygiene_test.py
+│   ├── report_reconciliation_test.py
+│   ├── status_contract_test.py
+│   ├── reproducibility_contract_test.py
+│   └── result_trace_eval.py
+├── tests/fixtures/result-trace/
+│   ├── observations.csv
+│   ├── context.json
+│   ├── analysis.py
+│   └── reported result fixtures
 ├── CHANGELOG.md
 ├── CONTRIBUTING.md
 ├── LICENSE
@@ -255,15 +274,13 @@ thesis-debugger/
 
 ## Roadmap
 
-### v2.1.0
+### v2.2.8
 
-- Literature Review Auditor
-- Reference & Citation Integrity Checker
-- Plagiarism / Paraphrase Risk Detection
-- Academic Authenticity / AI-Generated Writing Risk review
-- Integrity-specific finding types and verification requirements
-- Expanded synthetic benchmark coverage
-- Stronger false-positive controls for integrity modules
+- Executes a pinned, package-owned fixture analysis against supplied CSV data with a short timeout and process resource limits
+- Compares reported values, sample size, exclusions, units, procedure, and justified rounding tolerance
+- Produces a populated trace row and one canonical M06 finding for a demonstrated mismatch
+- Evaluates captured full-report matrix rows against the independent fixture oracle
+- Keeps missing artifacts, blocked execution, and unsupported interpretation separate from result mismatch
 
 ### v1.0.0
 
@@ -315,6 +332,12 @@ Run:
 
 ```bash
 python scripts/validate.py
+python scripts/validate_report.py templates/debug-report.md
+python scripts/spec_hygiene_test.py
+python scripts/report_reconciliation_test.py
+python scripts/status_contract_test.py
+python scripts/reproducibility_contract_test.py
+python scripts/result_trace_eval.py --capture-report PATH_TO_CAPTURED_REPORT.md
 ```
 
-before release. Static validation checks repository integrity and test coverage; it does not prove that the model will make every research judgment correctly.
+before release. The fixture suite executes only the bundled hash-pinned analysis script; it does not execute user-supplied research code. Captured-report evaluation checks a saved response against the deterministic fixture oracle. Neither result proves general Claude runtime behavior; runtime certification remains a separate gate.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Static regression fixtures for the v2.2.6 runtime reconciliation contract.
+"""Static regression fixtures for the v2.2.7 runtime reconciliation contract.
 
 This does not execute Claude. It validates the exact edge cases that previously
 escaped the runtime self-check: M02 with missing theory evidence and module-count

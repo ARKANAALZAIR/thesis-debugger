@@ -1,7 +1,7 @@
 ---
 name: thesis-debugger
 description: Audit theses, dissertations, research papers, proposals, datasets, research notes, and supervisor feedback as one connected research system. Use this skill for research debugging, literature review auditing, citation/reference integrity, paraphrase or plagiarism-risk review, academic-authenticity risk review, methodology/evidence checks, contradiction tracing, research-change impact analysis, and defense preparation. Prioritize evidence, traceability, low false positives, and change impact. Never claim plagiarism or AI authorship from style alone.
-version: 2.2.6
+version: 2.2.8
 ---
 
 # Thesis Debugger
@@ -90,6 +90,9 @@ Before diagnosing, inventory available materials and assign roles, for example:
 - `thesis.docx` → main thesis
 - `proposal.pdf` → proposal
 - `dataset.xlsx` → dataset
+- `analysis.py` / `analysis.ipynb` → supplied analysis script or notebook
+- dependency manifest / lockfile → declared analysis environment
+- intermediate result files → outputs used to produce thesis tables or figures
 - `questionnaire.docx` → instrument
 - `feedback.pdf` → supervisor feedback
 - `guidelines.pdf` → authoritative university/project requirements
@@ -133,25 +136,25 @@ Track each key variable/construct across chapters, instruments, tables, figures,
 Check construct definitions, indicators, instruments, scales, units, operational definitions, reliability/validity evidence where relevant, and alignment between conceptual and measured variables.
 
 ### Module 6 — Sample, dataset, and numeric consistency
-Cross-check N, sample counts, exclusions, treatment/group counts, totals, units, dates, reported values, tables, figures, appendices, and any supplied dataset.
+Read `references/reproducibility-checks.md`. Cross-check N, sample counts, exclusions, treatment/group counts, totals, units, dates, reported values, tables, figures, appendices, and any supplied dataset. For material results, trace supplied inputs through cleaning, analysis, intermediate outputs, thesis reporting, discussion, and conclusions as far as artifacts allow. Recalculate or execute only when relevant materials and tools are available and the supplied code has been inspected for safety.
 
 ### Module 7 — Statistical interpretation
-Read `references/statistical-checks.md`. Audit model/test fit, assumptions where material, interpretation of p-values/effect sizes/intervals, multiple testing claims, table arithmetic when supported, and whether conclusions overstate the analysis.
+Read `references/statistical-checks.md` and `references/reproducibility-checks.md`. Audit model/test fit, assumptions where material, interpretation of p-values/effect sizes/intervals, multiple testing claims, table arithmetic when supported, and whether conclusions overstate the analysis. Compare reproduced statistics with reported values only when an actual execution or independent calculation occurred; account for precision and legitimate non-determinism.
 
 ### Module 8 — Logic and causality
 Detect invalid inference chains, circular reasoning, causal overclaims, temporal leaps, confounding claims, and unsupported transitions.
 
 ### Module 9 — Evidence and claim support
-Read `references/evidence-checks.md`. For material claims, distinguish citation presence from substantive support. Classify support as `SUPPORTED`, `PARTIAL`, `UNSUPPORTED`, `CONTRADICTED`, or `INSUFFICIENT EVIDENCE`.
+Read `references/evidence-checks.md` and `references/reproducibility-checks.md`. For material claims, distinguish citation presence from substantive support. Classify support as `SUPPORTED`, `PARTIAL`, `UNSUPPORTED`, `CONTRADICTED`, or `INSUFFICIENT EVIDENCE`. Distinguish whether a result is reproducible from whether its interpretation is supported.
 
 ### Module 10 — Internal consistency and contradictions
-Read `references/consistency-checks.md`. Compare terminology, numbers, variables, hypotheses, samples, methods, results, tables, figures, scope, and conclusions across chapters/documents.
+Read `references/consistency-checks.md` and `references/reproducibility-checks.md`. Compare terminology, numbers, variables, hypotheses, samples, methods, results, tables, figures, scope, and conclusions across chapters/documents. Reconcile a supported reproduction mismatch with existing M06/M07/M10 findings by root cause; never create duplicate findings for the same issue.
 
 ### Module 11 — Scope and completeness
 Check whether the thesis claims more than its design/evidence can support, whether required reasoning links are missing, and whether key components are present for the stated research goal. Missing information is not automatically an error.
 
 ### Module 12 — Results / discussion / conclusion alignment
-Trace each major result into discussion and conclusion, and each conclusion back to results and research questions. Detect unanswered RQs, unused results, unsupported conclusions, and scope inflation.
+Read `references/reproducibility-checks.md`. Trace each major result into discussion and conclusion, and each conclusion back to results and research questions. Detect unanswered RQs, unused results, unsupported conclusions, and scope inflation. Carry any supported mismatch's downstream impact into the claim, discussion, and conclusion chain.
 
 ### Module 13 — Research dead ends and fragile dependencies
 Read `references/dependency-model.md`. Identify weak or broken nodes that can invalidate downstream analysis, and research questions that appear difficult/impossible to answer with the stated evidence/design.
@@ -183,7 +186,7 @@ Generate examiner-style questions from actual detected weaknesses, fragile depen
 ### Module 22 — Prioritized action plan
 Order actions by dependency and severity. Separate confirmed errors from verification tasks, potential concerns, and suggestions.
 
-## Production hardening — v2.2.6 canonical execution contract
+## Production hardening — v2.2.8 canonical execution contract
 
 The following rules are mandatory for every **FULL THESIS DEBUG** run. They harden execution completeness, module-state semantics, deduplication, severity calibration, health-score transparency, and final reconciliation.
 
@@ -194,6 +197,11 @@ The following rules are mandatory for every **FULL THESIS DEBUG** run. They hard
 - Do not ask the user which modules they want.
 - Do not replace a module with “covered above.” Each module gets its own status block.
 - A module may reuse evidence discovered by another module, but it still executes its own diagnostic question.
+- Reproducibility and result tracing are integrated into M06, M07, M09, M10, and M12; they do not add a canonical module or alter any module state taxonomy.
+- Include the result-level status matrix defined in `references/reproducibility-checks.md`. Keep those result labels separate from module statuses.
+- The only result-level labels are `REPRODUCED`, `MISMATCH`, `NOT REPRODUCIBLE WITH SUPPLIED MATERIALS`, and `NOT ASSESSABLE`.
+- Include the concise **Result Traceability & Reproduction Audit** subsection in the report when material results can be identified; explain when no result can be selected.
+- Never report a result as reproduced unless execution or an independent calculation actually occurred. Report exact missing inputs, unavailable dependencies, permissions, or safety blockers without treating them as proof of error or misconduct.
 
 ### B. Canonical 22-module registry
 
@@ -567,7 +575,7 @@ If a field cannot be established, say `NOT AVAILABLE` or `INSUFFICIENT EVIDENCE`
 
 For a broad thesis audit, always follow `references/output-schema.md` and `templates/debug-report.md`. The report must include the executive summary, health score, finding summary, the **full 22-module status matrix**, all detailed findings, coverage limits, change-impact baseline, and final debug state.
 
-Before returning the report, the v2.2.6 reconciliation gate in `references/audit-integrity.md` must pass: all M01–M22 appear exactly once, module/severity totals reconcile to unique finding IDs, missing core evidence is classified as `NOT ASSESSABLE`, and health-score bases are auditable.
+Before returning the report, the v2.2.8 reconciliation gate in `references/audit-integrity.md` must pass: all M01–M22 appear exactly once, module/severity totals reconcile to unique finding IDs, missing core evidence is classified as `NOT ASSESSABLE`, result-level traceability statuses are valid and separate from module statuses, and health-score bases are auditable.
 
 Do not dump every low-confidence observation into the opening. Lead with the highest-signal findings.
 
@@ -600,6 +608,7 @@ Load only the reference file needed for the current operation. For full audits, 
 - `references/citation-integrity-checks.md`
 - `references/paraphrase-risk-checks.md`
 - `references/authenticity-checks.md`
+- `references/reproducibility-checks.md`
 
 Use templates in `templates/` for structured outputs and `examples/` for benchmark-style calibration. Load the new integrity references only when the request involves literature, citations, paraphrase/plagiarism risk, or authenticity.
 

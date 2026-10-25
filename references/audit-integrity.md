@@ -159,3 +159,20 @@ Before returning the report, verify:
 [ ] M14 baseline is present even without OLD → NEW input
 [ ] Final debug state is present
 ```
+
+## 6. Result traceability reconciliation
+
+For each material result selected for the traceability matrix:
+
+- use exactly one result-level status from `references/reproducibility-checks.md`;
+- keep result-level statuses separate from the canonical module status taxonomy;
+- name the supplied artifacts and locations actually inspected and each missing, ambiguous, or inconsistent link;
+- claim `REPRODUCED` or `MISMATCH` only after an execution or independent recalculation actually completed;
+- state exact blockers for `NOT REPRODUCIBLE WITH SUPPLIED MATERIALS`, without treating them as proof of error or misconduct;
+- use `NOT ASSESSABLE` when the reported result or its scope cannot be identified well enough to compare;
+- account for rounding and justified non-determinism before classifying a difference;
+- link a supported mismatch to one canonical finding and deduplicate by root cause, evidence, and corrective action;
+- report downstream impact on thesis claims, discussion, and conclusions;
+- do not invent result IDs or empty rows when no material result can be selected.
+
+The matrix supplements, and does not replace, module statuses or canonical findings. A missing provenance link or blocked reproduction is not automatically a qualifying finding. Reconcile any actual mismatch with the relevant M06/M07/M10 owner and any related M09/M12 impact before counting severity or module findings.
